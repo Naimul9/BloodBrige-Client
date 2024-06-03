@@ -7,13 +7,13 @@ import { AuthContext } from "../../Provider/AuthProvider";
 
 const Navbar = () => {
 
-    const { user } = useContext(AuthContext)
+    const { user,logOut } = useContext(AuthContext)
     return (
         <div className='navbar bg-base-100 shadow-sm container px-4 mx-auto'>
         <div className='flex-1'>
           <Link to='/' className='flex gap-2 items-center'>
-            <img className='w-auto h-7' src="/Bookish-Haven.png" alt='' />
-            <span className='font-bold'>Bookish Haven</span>
+            <img className='w-auto h-16' src="/bloodBridge.png" alt='' />
+            <span className='font-bold text-red-300 '>Blood Bridge</span>
           </Link>
         </div>
   
@@ -78,7 +78,7 @@ const Navbar = () => {
               
                 <li className='mt-2'>
                   <button
-                    // onClick={logOut}
+                    onClick={logOut}
                     className='bg-gray-200 block text-center'
                   >
                     Logout
