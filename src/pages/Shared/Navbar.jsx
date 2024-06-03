@@ -24,16 +24,17 @@ const Navbar = () => {
               <Link to='/'>Home</Link>
             </li>
             <li>
-              <Link to='/all-books'>All Books</Link>
+              <Link to='/donation-requests'>Donation Requests</Link>
             </li>
             <li className='lg:block hidden'>
-               <Link to='/add-books' className='justify-between'>
-                    Add Books
+               <Link to='/blog' className='justify-between'>
+                    Blogs
                   </Link>
                 </li>
+               { user &&
                 <li className='lg:block hidden'>
-                  <Link to='/borrowed-books'>Borrowed Books</Link>
-                </li>
+                  <Link to='/funding'>Funding Links</Link>
+                </li>}
            
   
             {!user && (
