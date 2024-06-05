@@ -15,8 +15,11 @@ const Register = () => {
     const email = form.email.value
     const name = form.name.value
     const photo = form.photo.value
+    const bloodGroup = form.bloodGroup.value
+    const district = form.district.value
+    const upazila = form.upazila.value
     const pass = form.password.value
-    console.log({ email, pass, name, photo })
+    console.log({ email, pass, name, photo, bloodGroup , district, upazila })
 
     try {
       //2. User Registration
@@ -36,7 +39,7 @@ const Register = () => {
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
-      <div className='flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-lg  lg:max-w-4xl '>
+      <div className='flex w-full max-w-sm mx-auto overflow-hidden bg-red-50 rounded-lg shadow-lg  lg:max-w-4xl '>
         <div className='w-full px-6 py-8 md:px-8 lg:w-1/2'>
           <div className='flex justify-center mx-auto'>
             <img className='w-auto h-7 sm:h-8' src='' alt='' />
@@ -58,7 +61,9 @@ const Register = () => {
             <span className='w-1/5 border-b dark:border-gray-400 lg:w-1/4'></span>
           </div>
           <form onSubmit={handleSignUp}>
+            {/* Name */}
             <div className='mt-4'>
+          
               <label
                 className='block mb-2 text-sm font-medium text-gray-600 '
                 htmlFor='name'
@@ -73,21 +78,7 @@ const Register = () => {
                 type='text'
               />
             </div>
-            <div className='mt-4'>
-              <label
-                className='block mb-2 text-sm font-medium text-gray-600 '
-                htmlFor='photo'
-              >
-                Photo URL
-              </label>
-              <input
-                id='photo'
-                autoComplete='photo'
-                name='photo'
-                className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg    focus:border-blue-400 focus:ring-opacity-40  focus:outline-none focus:ring focus:ring-blue-300'
-                type='text'
-              />
-            </div>
+            {/* email */}
             <div className='mt-4'>
               <label
                 className='block mb-2 text-sm font-medium text-gray-600 '
@@ -103,7 +94,94 @@ const Register = () => {
                 type='email'
               />
             </div>
+            {/* photoUrl */}
+            <div className='mt-4'>
+              <label
+                className='block mb-2 text-sm font-medium text-gray-600 '
+                htmlFor='photo'
+              >
+                Photo URL
+              </label>
+              <input
+                id='photo'
+                autoComplete='photo'
+                name='photo'
+                className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg    focus:border-blue-400 focus:ring-opacity-40  focus:outline-none focus:ring focus:ring-blue-300'
+                type='text'
+              />
+            </div>
+            {/*blood group  */}
+            <div className='mt-4'>
+          
+          <label
+            className='block mb-2 text-sm font-medium text-gray-600 '
+            htmlFor='bloodGroup'
+          >
+            Blood Group
+          </label>
+          <select
+            id='bloodGroup'
+            autoComplete='bloodGroup'
+            name='bloodGroup'
+            className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg    focus:border-blue-400 focus:ring-opacity-40  focus:outline-none focus:ring focus:ring-blue-300 placeholder:'
+            type='text'
+            
+          >
+          <option value="A+"selected>A+</option>
+          <option value="A-"selected>A-</option>
+          <option value="B+"selected>B+</option>
+          <option value="B-"selected>B-</option>
+          <option value="AB+"selected>AB+</option>
+          <option value="AB-"selected>AB-</option>
+          <option value="O+"selected>O+</option>
+          <option value="O-"selected>O-</option>
 
+</select>
+          
+
+
+        </div>
+{/* district  */}
+<div className='mt-4'>
+          
+          <label
+            className='block mb-2 text-sm font-medium text-gray-600 '
+            htmlFor='district'
+          >
+            District
+          </label>
+          <select
+            id='district'
+            autoComplete='district'
+            name='district'
+            className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg    focus:border-blue-400 focus:ring-opacity-40  focus:outline-none focus:ring focus:ring-blue-300'
+            type='text'
+          >
+
+
+            </select>
+        </div>
+        {/* Upazila */}
+        <div className='mt-4'>
+          
+          <label
+            className='block mb-2 text-sm font-medium text-gray-600 '
+            htmlFor='upazila'
+          >
+            Upazila
+          </label>
+          <select
+            id='upazila'
+            autoComplete='upazila'
+            name='upazila'
+            className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg    focus:border-blue-400 focus:ring-opacity-40  focus:outline-none focus:ring focus:ring-blue-300'
+            type='text'
+          >
+            
+          </select>
+        </div>
+          
+{/* password */}
             <div className='mt-4'>
               <div className='flex justify-between'>
                 <label
@@ -125,7 +203,7 @@ const Register = () => {
             <div className='mt-6'>
               <button
                 type='submit'
-                className='w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50'
+                className='w-full px-6 py-3 bg-red-700 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform  rounded-lg hover:bg-red-800  '
               >
                 Sign Up
               </button>
@@ -133,7 +211,7 @@ const Register = () => {
           </form>
 
           <div className='flex items-center justify-between mt-4'>
-            <span className='w-1/5 border-b  md:w-1/4'></span>
+            <span className='w-1/5 border-b border-red-500  md:w-1/4'></span>
 
             <Link
               to='/login'
@@ -142,13 +220,13 @@ const Register = () => {
               or sign in
             </Link>
 
-            <span className='w-1/5 border-b  md:w-1/4'></span>
+            <span className='w-1/5 border-b border-red-500 md:w-1/4'></span>
           </div>
         </div>
         <div
           className='hidden bg-cover bg-center lg:block lg:w-1/2'
           style={{
-            backgroundImage: "",
+            backgroundImage: "url(/bloodBridge.png)",
           }}
         ></div>
       </div>

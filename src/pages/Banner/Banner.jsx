@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 
 const Banner = () => {
@@ -8,11 +9,11 @@ const Banner = () => {
     <div className="max-w-2xl text-white mt-10">
       <h1 className="mb-5 text-5xl font-bold">DONATE BLOOD AND<span className="text-red-600"> GET REAL BLESSINGS.</span> </h1>
       <p className="mb-5">Blood is the most precious gift that anyone can give to another person.
-Donating blood not only saves the life also save donor's lives.</p>
+Donating blood not only saves the life also save donors lives.</p>
 
 <div className="flex gap-5 justify-center mt-10">
 
-<button className="btn bg-red-400 hover:bg-red-500 text-white ">Join as a donor </button>
+<Link to='register'><button className="btn bg-red-400 hover:bg-red-500 text-white ">Join as a donor </button></Link>
       <button className="btn bg-red-400 hover:bg-red-500 text-white">Search Donors</button>
 </div>
     </div>
