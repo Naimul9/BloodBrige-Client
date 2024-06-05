@@ -13,8 +13,8 @@ Donating blood not only saves the life also save donors lives.</p>
 
 <div className="flex gap-5 justify-center mt-10">
 
-<Link to='register'><button className="btn bg-red-400 hover:bg-red-500 text-white ">Join as a donor </button></Link>
-      <button className="btn bg-red-400 hover:bg-red-500 text-white">Search Donors</button>
+<Link to='register'><button className="btn bg-red-500 hover:bg-red-700 text-white ">Join as a donor </button></Link>
+      <button className="btn bg-red-500 hover:bg-red-700 text-white">Search Donors</button>
 </div>
     </div>
 

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useContext, useState } from 'react'
 import toast from 'react-hot-toast'
-import axios from 'axios'
+
 import { AuthContext } from '../../Provider/AuthProvider'
 
 const Login = () => {
@@ -34,11 +34,11 @@ const Login = () => {
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
-      <div className='flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-lg  lg:max-w-4xl '>
+      <div className='flex w-full max-w-sm mx-auto overflow-hidden bg-red-50 rounded-lg shadow-lg  lg:max-w-4xl '>
         <div
           className='hidden bg-cover bg-center lg:block lg:w-1/2'
           style={{
-            backgroundImage: "url('https://i.ibb.co/8cwYtcz/pexels-eva-bronzini-8058227.jpg')",
+            backgroundImage: "url('/bloodBridge.png')",
           }}
         ></div>
 
@@ -57,7 +57,7 @@ const Login = () => {
             <span className='w-1/5 border-b  lg:w-1/4'></span>
 
             <div className='text-xs text-center text-gray-500 uppercase  hover:underline'>
-              or login with email
+             login with email
             </div>
 
             <span className='w-1/5 border-b dark:border-gray-400 lg:w-1/4'></span>
@@ -107,7 +107,7 @@ const Login = () => {
             <div className='mt-6'>
               <button
                 type='submit'
-                className='w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50'
+                className='w-full px-6 py-3 bg-red-700 hover text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform hover:bg-red-800 rounded-lg  focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50'
               >
                 Sign In
               </button>
@@ -115,7 +115,7 @@ const Login = () => {
           </form>
 
           <div className='flex items-center justify-between mt-4'>
-            <span className='w-1/5 border-b  md:w-1/4'></span>
+            <span className='w-1/5 border-b border-red-600  md:w-1/4'></span>
 
             <Link
               to='/register'
@@ -124,7 +124,7 @@ const Login = () => {
               or Register
             </Link>
 
-            <span className='w-1/5 border-b  md:w-1/4'></span>
+            <span className='w-1/5 border-b border-red-600 md:w-1/4'></span>
           </div>
         </div>
       </div>
