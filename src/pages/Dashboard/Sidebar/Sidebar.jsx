@@ -28,7 +28,7 @@ const Sidebar = () => {
             <Link to='/'>
               <img
                 // className='hidden md:block'
-                src='https://i.ibb.co/4ZXzmq5/logo.png'
+                src='/Blood.png'
                 alt='logo'
                 width='100'
                 height='100'
@@ -57,7 +57,7 @@ const Sidebar = () => {
               <Link to='/'>
                 <img
                   // className='hidden md:block'
-                  src='https://i.ibb.co/4ZXzmq5/logo.png'
+                  src='https://i.ibb.co/VVpFCsh/Blood.png'
                   alt='logo'
                   width='100'
                   height='100'
@@ -73,7 +73,7 @@ const Sidebar = () => {
             {/*  Menu Items */}
             <nav>
               {/* Statistics */}
-              <NavLink
+              {/* <NavLink
                 to='/dashboard'
                 end
                 className={({ isActive }) =>
@@ -85,7 +85,7 @@ const Sidebar = () => {
                 <BsGraphUp className='w-5 h-5' />
 
                 <span className='mx-4 font-medium'>Statistics</span>
-              </NavLink>
+              </NavLink> */}
 
               {/* Add Room */}
               <NavLink
