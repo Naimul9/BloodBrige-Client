@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
-
-import { useContext } from 'react'
-
+import { useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { AuthContext } from '../../Provider/AuthProvider'
+
+
+
+
 const Register = () => {
   const navigate = useNavigate()
   const { createUser, updateUserProfile, user, setUser } =
@@ -35,7 +37,29 @@ const Register = () => {
     }
   }
 
- 
+  const [data, setData] = useState([]);
+  const [upData, setUpData] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch('/districts.json');
+      const result = await response.json();
+      setData(result);
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch('/upazilas.json');
+      const result = await response.json();
+      setUpData(result);
+    }
+
+    fetchData();
+  }, []);
+
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
@@ -49,7 +73,7 @@ const Register = () => {
             Get Your Free Account Now.
           </p>
 
-        
+      
 
           <div className='flex items-center justify-between mt-4'>
             <span className='w-1/5 border-b  lg:w-1/4'></span>
@@ -150,14 +174,21 @@ const Register = () => {
           >
             District
           </label>
+         
           <select
             id='district'
             autoComplete='district'
             name='district'
             className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg    focus:border-blue-400 focus:ring-opacity-40  focus:outline-none focus:ring focus:ring-blue-300'
-            type='text'
-          >
+            type='text'>
 
+{
+  data.map(district=>(
+    <option value={district.name} key={district._id}>
+      {district.name}
+    </option>
+  ))
+}
 
             </select>
         </div>
@@ -177,7 +208,14 @@ const Register = () => {
             className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg    focus:border-blue-400 focus:ring-opacity-40  focus:outline-none focus:ring focus:ring-blue-300'
             type='text'
           >
-            
+            {
+  upData.map(upazila=>(
+    <option value={upazila.name} key={upazila._id}>
+      {upazila.name}
+    </option>
+  ))
+}
+
           </select>
         </div>
           
