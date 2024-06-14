@@ -34,10 +34,9 @@ const DashboardShow = () => {
   const { data: allUsers = [], isLoading } = useQuery({
     queryKey: ['donor'],
     queryFn: async () => {
-        const { data } = await axiosSecure.get('/users');
+        const { data } = await axiosSecure.get('/users/donor');
         // Filter to get only donors (you should adjust this filter based on your actual data structure)
-        const donors = data.filter(user => user.role === 'donor');
-        return donors;
+        return data;
     },
     enabled: true, // Query is always enabled
 });

@@ -51,15 +51,17 @@ const AuthProvider = ({ children }) => {
 
 
   // save user
-  const saveUser = async user => {
+  const saveUser = async (user) => {
     const currentUser = {
       email: user?.email,
+      name : user?.displayName,
+      photo: user?.photoURL,
       role: 'donor',
       status: 'active',
-    }
-    const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/user`, currentUser)
-    return data
-  }
+    };
+    const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/user`, currentUser);
+    return data;
+  };
 
 
   // onAuthStateChange

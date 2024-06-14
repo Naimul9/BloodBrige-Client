@@ -22,6 +22,7 @@ const Register = () => {
     const upazila = form.upazila.value
     const pass = form.password.value
     
+    
     console.log({ email, pass, name, photo, bloodGroup , district, upazila })
 
     try {
