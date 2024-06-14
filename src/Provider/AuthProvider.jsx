@@ -1,6 +1,6 @@
- import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import {
- 
+
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
@@ -11,6 +11,8 @@ import {
 
 import axios from 'axios'
 import { app } from '../../firebase.config'
+import useAxiosPublic from '../hooks/useAxiosPublic'
+
 
 export const AuthContext = createContext(null)
 const auth = getAuth(app)
@@ -20,6 +22,7 @@ const auth = getAuth(app)
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const axiosPublic =useAxiosPublic()
 
   const createUser = (email, password) => {
     setLoading(true)
@@ -35,7 +38,7 @@ const AuthProvider = ({ children }) => {
 
   const logOut = async () => {
     setLoading(true)
-    await axios(`${import.meta.env.VITE_API_URL}/logout`, {withCredentials:true})
+    await axios(`${import.meta.env.VITE_API_URL}/logout`, { withCredentials: true })
     return signOut(auth)
   }
 
@@ -48,30 +51,41 @@ const AuthProvider = ({ children }) => {
 
 
   // save user
-    const saveUser = async user=>{
-      const currentUser = {
-        email: user?.email,
-        role : 'donor', 
-        status: 'active',
-      }
-      const {data} = await axios.put(`${import.meta.env.VITE_API_URL}/user`, currentUser)
-      return data
+  const saveUser = async user => {
+    const currentUser = {
+      email: user?.email,
+      role: 'donor',
+      status: 'active',
     }
+    const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/user`, currentUser)
+    return data
+  }
 
 
   // onAuthStateChange
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser)
-      if(currentUser){
-saveUser(currentUser)
+      if (currentUser) {
+       
+        const userInfo = { email: currentUser.email }
+        axiosPublic.post('/jwt', userInfo)
+          .then(res => {
+            if (res.data.token){
+              localStorage.setItem('access-token', res.data.token)
+            }})
+            saveUser(currentUser)
+      } else{
+          localStorage.removeItem('access-token')
       }
       setLoading(false)
     })
+
+
     return () => {
       return unsubscribe()
     }
-  }, [])
+  }, [axiosPublic])
 
   const authInfo = {
     user,

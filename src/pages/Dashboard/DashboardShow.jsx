@@ -22,7 +22,7 @@ const DashboardShow = () => {
   });
 
   // get all donation req
-  const { data: alldonations = [], } = useQuery({
+  const { data: allDonations = [], } = useQuery({
     queryKey: ['donation',],
     queryFn: async () => {
       const { data } = await axiosSecure.get('/donation');
@@ -154,7 +154,7 @@ const DashboardShow = () => {
                                 <FaTint className="text-4xl text-red-500 mr-4" />
                                 <div>
                                     <p className="text-lg font-semibold text-gray-200">Total Blood Donation Requests</p>
-                                    <p className="text-gray-400">{alldonations.length}</p>
+                                    <p className="text-gray-400">{allDonations.length}</p>
                                 </div>
                             </div>
                         </div>
