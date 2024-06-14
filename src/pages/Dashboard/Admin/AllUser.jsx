@@ -11,22 +11,22 @@ const AllUser = () => {
     const updateUserStatus = async (email, status) => {
         try {
             await axiosSecure.put('/user/status', { email, status });
-            // Refetch users after updating status
+      
             refetch();
         } catch (error) {
             console.error('Error updating user status:', error);
-            // Handle error state or show notification
+         
         }
     };
 
     const updateUserRole = async (email, role) => {
         try {
             await axiosSecure.put('/user/role', { email, role });
-            // Refetch users after updating role
+           
             refetch();
         } catch (error) {
             console.error('Error updating user role:', error);
-            // Handle error state or show notification
+           
         }
     };
 
@@ -36,7 +36,7 @@ const AllUser = () => {
             const { data } = await axiosSecure.get('/users');
             return data;
         },
-        enabled: true, // Query is always enabled
+        enabled: true,
     });
 
     const filteredUsers = filter === 'all' ? allUsers : allUsers.filter(user => user.status === filter);
