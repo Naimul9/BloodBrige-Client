@@ -9,10 +9,12 @@ import { NavLink } from 'react-router-dom'
 
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../../../Provider/AuthProvider'
+import useRole from '../../../hooks/useRole';
 
 const Sidebar = () => {
   const { logOut } = useContext(AuthContext)
   const [isActive, setActive] = useState(false)
+  const [role] =useRole()
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
@@ -74,7 +76,7 @@ const Sidebar = () => {
              
 
               {/* my donation request */}
-              <NavLink
+              {role ==='donor' &&   <NavLink
                 to='my-donation-requests'
                 className={({ isActive }) =>
                   `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
@@ -85,9 +87,9 @@ const Sidebar = () => {
                 <BiSolidDonateBlood  className='w-5 h-5' />
 
                 <span className='mx-4 font-medium'>My Donation Requests</span>
-              </NavLink>
+              </NavLink>}
               {/* create donation request */}
-              <NavLink
+           {role ==='donor' &&   <NavLink
                 to='create-donation-request'
                 className={({ isActive }) =>
                   `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
@@ -98,7 +100,82 @@ const Sidebar = () => {
                 <IoCreateOutline className='w-5 h-5' />
 
                 <span className='mx-4 font-medium'>Create Donation Request</span>
-              </NavLink>
+              </NavLink> }
+
+{/* Admin Dashboard */}
+{/* All users */}
+{role ==='admin' &&   <NavLink
+                to='all-users'
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
+                    isActive ? 'bg-red-300  text-gray-700' : 'text-gray-600'
+                  }`
+                }
+              >
+                <IoCreateOutline className='w-5 h-5' />
+
+                <span className='mx-4 font-medium'>All Users</span>
+              </NavLink> }
+{/* All Blood donation Request Page */}
+{role ==='admin' &&   <NavLink
+                to='all-blood-donation-request'
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
+                    isActive ? 'bg-red-300  text-gray-700' : 'text-gray-600'
+                  }`
+                }
+              >
+                <IoCreateOutline className='w-5 h-5' />
+
+                <span className='mx-4 text-[15px] font-medium'>All Blood Donation Request</span>
+              </NavLink> }
+
+              {/* Content Management  */}
+
+{role ==='admin' &&   <NavLink
+                to='content-management'
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
+                    isActive ? 'bg-red-300  text-gray-700' : 'text-gray-600'
+                  }`
+                }
+              >
+                <IoCreateOutline className='w-5 h-5' />
+
+                <span className='mx-4 font-medium'>Content Management</span>
+              </NavLink> }
+
+              {/* volunteer Dashboard */}
+
+              {role ==='volunteer' &&   <NavLink
+                to='all-blood-donation-request'
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
+                    isActive ? 'bg-red-300  text-gray-700' : 'text-gray-600'
+                  }`
+                }
+              >
+                <IoCreateOutline className='w-5 h-5' />
+
+                <span className='mx-4 text-[15px] font-medium'>All Blood Donation Request</span>
+              </NavLink> }
+
+              {role ==='volunteer' &&   <NavLink
+                to='content-management'
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
+                    isActive ? 'bg-red-300  text-gray-700' : 'text-gray-600'
+                  }`
+                }
+              >
+                <IoCreateOutline className='w-5 h-5' />
+
+                <span className='mx-4 font-medium'>Content Management</span>
+              </NavLink> }
+
+
+
+
             </nav>
           </div>
         </div>

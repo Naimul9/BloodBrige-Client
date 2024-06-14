@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../Provider/AuthProvider";
-import axios from "axios";
+
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 
@@ -44,11 +44,12 @@ const CreateDonationRequest = () => {
     const donationDate = form.donationDate.value;
     const donationTime = form.donationTime.value;
     const requestMessage = form.requestMessage.value;
+    const email =user.email
     const donationStatus = "pending"
 
     const donationData = {
       recipientName, recipientDistrict, recipientUpazila, hospitalName,
-      donationDate, donationTime, fullAddress, requestMessage, donationStatus
+      donationDate, donationTime, fullAddress, requestMessage, donationStatus,email
     };
     axiosSecure.post('/add-donation', donationData)
     .then(res=>{

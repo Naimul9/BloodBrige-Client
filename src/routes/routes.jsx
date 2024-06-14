@@ -7,6 +7,8 @@ import Dashboard from "../layout/Dashboard";
 import Profile from "../pages/Dashboard/Profile/Profile";
 import MyDonationRequests from "../pages/Dashboard/Donor/MyDonationRequests";
 import CreateDonationRequest from "../pages/Dashboard/Donor/CreateDonationRequest";
+import DashboardShow from "../pages/Dashboard/DashboardShow";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -25,8 +27,12 @@ const router = createBrowserRouter([
   { path: 'register', element: <Register /> },
   {
     path: '/dashboard',
-    element: <Dashboard />,
+    element: <PrivateRoute><Dashboard /></PrivateRoute>,
     children: [
+      {
+        index: true,
+        element:<DashboardShow/>
+      },
       {
         path: 'profile',
         element: <Profile />
