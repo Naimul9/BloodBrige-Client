@@ -9,7 +9,7 @@ const ContentManagement = () => {
     const navigate = useNavigate();
     const axiosSecure = useAxiosSecure();
     const { user } = useContext(AuthContext);
-    const[role] = useRole()
+    const [role] = useRole();
     const [filter, setFilter] = useState('all');
     const queryClient = useQueryClient();
 
@@ -70,33 +70,42 @@ const ContentManagement = () => {
                     <option value="published">Published</option>
                 </select>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {isLoading ? (
-                    <p>Loading...</p>
-                ) : (
-                    blogs.map(blog => (
-                        <div key={blog._id} className="card">
-                            <div className="card-body">
-                                <h2 className="card-title">{blog.title}</h2>
-                                <p>{blog.content}</p>
-                                <div className="card-actions justify-end">
+            {isLoading ? (
+                <p>Loading...</p>
+            ) : (
+                <table className="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th className="px-4 py-2">Title</th>
+                            <th className="px-4 py-2">Content</th>
+                            <th className="px-4 py-2">Status</th>
+                            <th className="px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {blogs.map(blog => (
+                            <tr key={blog._id}>
+                                <td className="border px-4 py-2">{blog.title}</td>
+                                <td className="border px-4 py-2">{blog.content.slice(0,100)}</td>
+                                <td className="border px-4 py-2">{blog.status}</td>
+                                <td className="border px-4 py-2">
                                     {role === 'admin' && (
-                                        <>
+                                        <div className="flex space-x-2">
                                             {blog.status === 'draft' ? (
                                                 <button onClick={() => publishBlog.mutate(blog._id)} className="btn btn-success">Publish</button>
                                             ) : (
-                                                <button onClick={() => unpublishBlog.mutate(blog._id)} className="btn btn-warning">Unpublish</button>
+                                                <button onClick={() => unpublishBlog.mutate(blog._id)} className="btn btn-warning">Draft</button>
                                             )}
                                             <button onClick={() => handleEditBlog(blog._id)} className="btn btn-info">Edit</button>
                                             <button onClick={() => deleteBlog.mutate(blog._id)} className="btn btn-danger">Delete</button>
-                                        </>
+                                        </div>
                                     )}
-                                </div>
-                            </div>
-                        </div>
-                    ))
-                )}
-            </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 };

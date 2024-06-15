@@ -15,6 +15,7 @@ import AdminRoute from "./AdminRoute";
 import ContentManagement from "../pages/Dashboard/Admin/ContentManagement";
 import DonationRequests from "../pages/DonationRequests/DonationRequests";
 import AddBlog from "../pages/Dashboard/Admin/AddBlog";
+import SearchPage from "../pages/SearchPage/SearchPage";
 
 const router = createBrowserRouter([
   {
@@ -30,11 +31,17 @@ const router = createBrowserRouter([
         path:'/donation-requests',
         element:<DonationRequests/>
       }
+      ,
+      
 
     ],
   },
   { path: 'login', element: <Login /> },
   { path: 'register', element: <Register /> },
+  {
+    path:'/search-page',
+    element:<SearchPage/>
+  },
   {
     path: '/dashboard',
     element: <PrivateRoute><Dashboard /></PrivateRoute>,
