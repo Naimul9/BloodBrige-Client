@@ -1,13 +1,15 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { AuthContext } from '../../../Provider/AuthProvider';
+import useRole from '../../../hooks/useRole';
 
 const ContentManagement = () => {
     const navigate = useNavigate();
     const axiosSecure = useAxiosSecure();
     const { user } = useContext(AuthContext);
+    const[role] = useRole()
     const [filter, setFilter] = useState('all');
     const queryClient = useQueryClient();
 
@@ -50,10 +52,6 @@ const ContentManagement = () => {
         }
     });
 
-    const handleAddBlog = () => {
-        navigate('/add-blog');
-    };
-
     const handleEditBlog = (id) => {
         navigate(`/edit-blog/${id}`);
     };
@@ -61,7 +59,9 @@ const ContentManagement = () => {
     return (
         <div className="container p-4 mx-auto">
             <div className="flex justify-end mb-4">
-                <button onClick={handleAddBlog} className="btn btn-primary">Add Blog</button>
+                <Link to={'/dashboard/add-blog'}>
+                    <button className="btn btn-primary">Add Blog</button>
+                </Link>
             </div>
             <div className="flex justify-end mb-4">
                 <select value={filter} onChange={(e) => setFilter(e.target.value)} className="select select-bordered">
@@ -80,7 +80,7 @@ const ContentManagement = () => {
                                 <h2 className="card-title">{blog.title}</h2>
                                 <p>{blog.content}</p>
                                 <div className="card-actions justify-end">
-                                    {user?.role === 'admin' && (
+                                    {role === 'admin' && (
                                         <>
                                             {blog.status === 'draft' ? (
                                                 <button onClick={() => publishBlog.mutate(blog._id)} className="btn btn-success">Publish</button>

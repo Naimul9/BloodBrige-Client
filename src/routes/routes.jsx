@@ -13,6 +13,8 @@ import AllUser from "../pages/Dashboard/Admin/AllUser";
 import AllBloodDonationRequests from "../pages/Dashboard/Admin/AllBloodDonationRequests";
 import AdminRoute from "./AdminRoute";
 import ContentManagement from "../pages/Dashboard/Admin/ContentManagement";
+import DonationRequests from "../pages/DonationRequests/DonationRequests";
+import AddBlog from "../pages/Dashboard/Admin/AddBlog";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +26,10 @@ const router = createBrowserRouter([
         index: true,
         element: <Home />,
       },
+      {
+        path:'/donation-requests',
+        element:<DonationRequests/>
+      }
 
     ],
   },
@@ -60,6 +66,10 @@ const router = createBrowserRouter([
       {
         path:'content-management',
         element:<AdminRoute><ContentManagement/></AdminRoute>
+      },
+      {
+        path:'add-blog',
+        element:<AdminRoute><AddBlog/></AdminRoute>
       }
 
     ],
