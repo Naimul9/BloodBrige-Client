@@ -16,6 +16,8 @@ import ContentManagement from "../pages/Dashboard/Admin/ContentManagement";
 import DonationRequests from "../pages/DonationRequests/DonationRequests";
 import AddBlog from "../pages/Dashboard/Admin/AddBlog";
 import SearchPage from "../pages/SearchPage/SearchPage";
+import BloodDonationRequestDetail from "../pages/BloodDonationRequestDetail/BloodDonationRequestDetail";
+import Blog from "../pages/Blog/Blog";
 
 const router = createBrowserRouter([
   {
@@ -30,18 +32,26 @@ const router = createBrowserRouter([
       {
         path:'/donation-requests',
         element:<DonationRequests/>
+      },
+      {
+        path:'/search-page',
+        element:<SearchPage/>
+      },
+      {
+        path:'/blood-donation-request-detail/:id',
+        element:<BloodDonationRequestDetail/>
+      },
+      {
+        path:'/blog',
+        element:<Blog/>
       }
-      ,
       
 
     ],
   },
   { path: 'login', element: <Login /> },
   { path: 'register', element: <Register /> },
-  {
-    path:'/search-page',
-    element:<SearchPage/>
-  },
+
   {
     path: '/dashboard',
     element: <PrivateRoute><Dashboard /></PrivateRoute>,

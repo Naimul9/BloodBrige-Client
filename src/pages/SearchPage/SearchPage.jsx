@@ -1,10 +1,22 @@
 import  { useEffect, useState } from 'react';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { useQuery } from '@tanstack/react-query';
 
 const SearchPage = () => {
-    const [bloodGroup, setBloodGroup] = useState('');
-  
-    const [donors, setDonors] = useState([]);
-    const [loading, setLoading] = useState(false);
+
+    const axiosSecure=useAxiosSecure()
+
+    const { data: donors = [], } = useQuery({
+        queryKey: ['donation',],
+        queryFn: async () => {
+          const { data } = await axiosSecure.get('/donation');
+          console.log(data);
+          return data;
+        },
+      });
+
+
+  const {loading} =useState()
 
     const [data, setData] = useState([]);
     const [upData, setUpData] = useState([]);
@@ -155,7 +167,8 @@ e.preventDefault()
                     <ul>
                         {donors.map((donor) => (
                             <li key={donor.id}>
-                                {donor.name} - {donor.bloodGroup} - {donor.district} - {donor.upazila}
+                                {donor.
+recipientName} - {donor.bloodGroup} - {donor.district} - {donor.upazila}
                             </li>
                         ))}
                     </ul>

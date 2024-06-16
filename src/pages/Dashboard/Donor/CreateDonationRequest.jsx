@@ -51,13 +51,18 @@ const CreateDonationRequest = () => {
       recipientName, recipientDistrict, recipientUpazila, hospitalName,
       donationDate, donationTime, fullAddress, requestMessage, donationStatus,email
     };
-    axiosSecure.post('/add-donation', donationData)
-    .then(res=>{
+    axiosSecure.put('/add-donation', donationData)
+    .then(res => {
         console.log(res.data);
-        if(res.data.insertedId){
-            toast.success('Request added Successfully')
+        if (res.data.insertedId || res.data.modifiedCount > 0) {
+            toast.success('Request added/updated Successfully');
         }
     })
+    .catch(error => {
+        console.error('Error adding/updating request:', error);
+        toast.error('Failed to add/update request');
+    });
+
 
    console.log(donationData);
   };

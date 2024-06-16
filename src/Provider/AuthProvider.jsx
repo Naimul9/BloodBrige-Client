@@ -51,17 +51,17 @@ const AuthProvider = ({ children }) => {
 
 
   // save user
-  const saveUser = async (user) => {
-    const currentUser = {
-      email: user?.email,
-      name : user?.displayName,
-      photo: user?.photoURL,
-      role: 'donor',
-      status: 'active',
-    };
-    const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/user`, currentUser);
-    return data;
-  };
+  // const saveUser = async (user) => {
+  //   const currentUser = {
+  //     email: user?.email,
+  //     name : user?.displayName,
+  //     photo: user?.photoURL,
+  //     role: 'donor',
+  //     status: 'active',
+  //   };
+  //   const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/user`, currentUser);
+  //   return data;
+  // };
 
 
   // onAuthStateChange
@@ -76,7 +76,7 @@ const AuthProvider = ({ children }) => {
             if (res.data.token){
               localStorage.setItem('access-token', res.data.token)
             }})
-            saveUser(currentUser)
+            // saveUser(currentUser)
       } else{
           localStorage.removeItem('access-token')
       }
