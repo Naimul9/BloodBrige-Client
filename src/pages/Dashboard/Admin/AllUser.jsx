@@ -111,6 +111,14 @@ const AllUser = () => {
                                         Make Admin
                                     </button>
                                 )}
+                                {user.role !== 'donor' && (
+                                    <button
+                                        onClick={() => updateUserRole(user.email, 'donor')}
+                                        className="btn btn-xs"
+                                    >
+                                        Make Donor
+                                    </button>
+                                )}
                             </td>
                         </tr>
                     ))}

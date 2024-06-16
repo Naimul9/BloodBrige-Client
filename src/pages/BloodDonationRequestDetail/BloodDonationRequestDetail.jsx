@@ -4,19 +4,17 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../Provider/AuthProvider";
-import Modal from "react-modal";
 
 const BloodDonationRequestDetail = () => {
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: pendingUser = {}, isLoading } = useQuery({
     queryKey: ["pending", id],
     queryFn: async () => {
       const { data } = await axiosSecure.get(`donations/${id}`);
-      console.log(data);
       return data;
     },
   });
@@ -25,46 +23,32 @@ const BloodDonationRequestDetail = () => {
     return <div>Loading...</div>;
   }
 
-  const handleOpenModal = () => {
-    setModalIsOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalIsOpen(false);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.target;
-    const requestMessage = form.requestMessage.value;
-
     const donationData = {
       ...pendingUser,
       donationStatus: "in-progress",
       donorName: user.displayName,
       donorEmail: user.email,
-      requestMessage,
     };
 
-    axiosSecure.put(`/donations/${id}`, donationData)
-      .then(res => {
-        console.log(res.data);
-        if (res.data.modifiedCount > 0) {
-          toast.success('Donation request updated successfully');
-          handleCloseModal();
-        }
-      })
-      .catch(error => {
-        console.error('Error updating donation request:', error);
+    try {
+      const response = await axiosSecure.put(`/add-donation`, donationData);
+      if (response.data.modifiedCount > 0) {
+        toast.success('Donation request updated successfully');
+        setIsModalOpen(false);
+      } else {
         toast.error('Failed to update donation request');
-      });
+      }
+    } catch (error) {
+      toast.error('Failed to update donation request');
+    }
   };
 
   return (
     <div className='py-20 w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
       <form>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
-          {/* Static form fields for displaying donation request details */}
           <div className='space-y-6'>
             <div className='space-y-1 text-sm'>
               <label htmlFor='requesterName' className='block text-gray-600'>Requester Name</label>
@@ -182,97 +166,76 @@ const BloodDonationRequestDetail = () => {
         </div>
         <button
           type='button'
-          onClick={handleOpenModal}
+          onClick={() => setIsModalOpen(true)}
           className='w-full p-3 mt-5 text-center font-medium text-white transition duration-200 rounded shadow-md bg-red-500'
         >
           Donate
         </button>
       </form>
 
-      {/* Modal for donation form */}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={handleCloseModal}
-        contentLabel="Confirm Donation"
-        className="modal"
-        overlayClassName="modal-overlay"
-      >
-        <h2 className="text-xl font-semibold mb-4">Confirm Donation</h2>
-        <form onSubmit={handleSubmit}>
-          <div className='space-y-1 text-sm'>
-            <label htmlFor='donorName' className='block text-gray-600'>Donor Name</label>
-            <input
-              className='w-full px-4 py-3 text-gray-800 border border-red-300 focus:outline-red-500 rounded-md '
-              name='donorName'
-              id='donorName'
-              type='text'
-              defaultValue={user?.displayName}
-              readOnly
-            />
+      {isModalOpen && (
+        <div className="fixed inset-0 z-10 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:text-left">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                      Donation Details
+                    </h3>
+                    <div className="mt-2">
+                      <form onSubmit={handleSubmit}>
+                        <div className='space-y-4'>
+                          <div className='space-y-1 text-sm'>
+                            <label htmlFor='donorName' className='block text-gray-600'>Donor Name</label>
+                            <input
+                              className='w-full px-4 py-3 text-gray-800 border border-gray-300 focus:outline-red-500 rounded-md '
+                              name='donorName'
+                              id='donorName'
+                              type='text'
+                              defaultValue={user.displayName}
+                              readOnly
+                            />
+                          </div>
+                          <div className='space-y-1 text-sm'>
+                            <label htmlFor='donorEmail' className='block text-gray-600'>Donor Email</label>
+                            <input
+                              className='w-full px-4 py-3 text-gray-800 border border-gray-300 focus:outline-red-500 rounded-md '
+                              name='donorEmail'
+                              id='donorEmail'
+                              type='text'
+                              defaultValue={user.email}
+                              readOnly
+                            />
+                          </div>
+                          <button type="submit" className="w-full px-4 py-2 mt-3 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                            Confirm Donation
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
-          <div className='space-y-1 text-sm'>
-            <label htmlFor='donorEmail' className='block text-gray-600'>Donor Email</label>
-            <input
-              className='w-full px-4 py-3 text-gray-800 border border-red-300 focus:outline-red-500 rounded-md '
-              name='donorEmail'
-              id='donorEmail'
-              type='text'
-              defaultValue={user?.email}
-              readOnly
-            />
-          </div>
-          <div className='space-y-1 text-sm'>
-            <label htmlFor='requestMessage' className='block text-gray-600'>Request Message</label>
-            <textarea
-              id='requestMessage'
-              className='block rounded-md focus:red-300 w-full h-[150px] px-4 py-3 text-gray-800 border border-red-300 focus:outline-red-500 '
-              name='requestMessage'
-              placeholder="Please Write the Reason Here"
-            ></textarea>
-          </div>
-          <button
-            type='submit'
-            className='w-full p-3 mt-5 text-center font-medium text-white transition duration-200 rounded shadow-md bg-red-500'
-          >
-            Confirm Donation
-          </button>
-        </form>
-        <button
-          onClick={handleCloseModal}
-          className='mt-4 text-center font-medium text-red-500 underline'
-        >
-          Cancel
-        </button>
-      </Modal>
+        </div>
+      )}
     </div>
   );
 };
 
 export default BloodDonationRequestDetail;
-
-// Modal styles
-// import './Modal.css';
-
-// // Modal.css
-// .modal {
-//   position: fixed;
-//   top: 50%;
-//   left: 50%;
-//   right: auto;
-//   bottom: auto;
-//   margin-right: -50%;
-//   transform: translate(-50%, -50%);
-//   background: white;
-//   padding: 20px;
-//   border-radius: 8px;
-//   outline: none;
-// }
-
-// .modal-overlay {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   background: rgba(0, 0, 0, 0.75);
-// }
