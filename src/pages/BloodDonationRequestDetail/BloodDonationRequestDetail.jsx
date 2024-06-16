@@ -27,7 +27,7 @@ const BloodDonationRequestDetail = () => {
     e.preventDefault();
     const donationData = {
       ...pendingUser,
-      donationStatus: "in-progress",
+      donationStatus: "inprogress",
       donorName: user.displayName,
       donorEmail: user.email,
     };

@@ -5,6 +5,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useRole from "../../hooks/useRole";
 import { NavLink } from "react-router-dom";
 import { FaUsers, FaMoneyBillWave, FaTint } from 'react-icons/fa'; 
+import toast from "react-hot-toast";
 
 const DashboardShow = () => {
   const axiosSecure = useAxiosSecure();
@@ -41,6 +42,50 @@ const DashboardShow = () => {
     enabled: true, // Query is always enabled
 });
   console.log(allUsers);
+
+  // ---------------------
+
+  const handleMarkDone = async () => {
+    const donationStatus = {
+      
+      donationStatus: "Done",
+     
+    };
+
+    try {
+      await axiosSecure.put(`/add-donation`, donationStatus);
+      toast.success("Donation request marked as done.");
+      refetch(); // Refresh donation data
+    } catch (error) {
+      toast.error("Failed to mark donation as done.");
+    }
+  };
+
+  const handleMarkCancelled = async (donationId) => {
+    try {
+      await axiosSecure.put(`/donation/${donationId}`, { donationStatus: 'cancelled' });
+      toast.success("Donation request cancelled.");
+      refetch(); // Refresh donation data
+    } catch (error) {
+      toast.error("Failed to cancel donation request.");
+    }
+  };
+
+  const handleEdit = (donationId) => {
+    history.push(`/edit-donation/${donationId}`);
+  };
+
+  const handleDelete = async (donationId) => {
+    if (window.confirm("Are you sure you want to delete this donation request?")) {
+      try {
+        await axiosSecure.delete(`/donation/${donationId}`);
+        toast.success("Donation request deleted successfully.");
+        refetch(); // Refresh donation data
+      } catch (error) {
+        toast.error("Failed to delete donation request.");
+      }
+    }
+  };
 
   
 
@@ -81,18 +126,22 @@ const DashboardShow = () => {
                         <td className="p-3">
                           {donation.donationStatus === 'inprogress' && (
                             <>
-                              <button className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50">
+                              <button onClick={handleMarkDone} className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50">
                                 Done
                               </button>
-                              <button className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 ml-2">
+                              <button onClick={handleMarkCancelled} className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 ml-2">
                                 Cancel
                               </button>
+                            
+                                <td>{donation.donorName}</td>
+                                <td>{donation.donorEmail}</td>
+                             
                             </>
                           )}
                           <button className="px-3 py-1 font-semibold rounded-md bg-blue-400 dark:bg-blue-600 text-gray-900 dark:text-gray-50 ml-2">
                             Edit
                           </button>
-                          <button className="px-3 py-1 font-semibold rounded-md bg-yellow-400 dark:bg-yellow-600 text-gray-900 dark:text-gray-50 ml-2">
+                          <button onClick={handleDelete} className="px-3 py-1 font-semibold rounded-md bg-yellow-400 dark:bg-yellow-600 text-gray-900 dark:text-gray-50 ml-2">
                             Delete
                           </button>
                           <button className="px-3 py-1 font-semibold rounded-md bg-purple-400 dark:bg-purple-600 text-gray-900 dark:text-gray-50 ml-2">

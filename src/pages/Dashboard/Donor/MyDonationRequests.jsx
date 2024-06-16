@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../Provider/AuthProvider";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import useRole from "../../../hooks/useRole";
 
 const MyDonationRequests = () => {
@@ -29,6 +29,24 @@ const MyDonationRequests = () => {
         refetch(); // Refetch data when filter changes
     };
 
+    const handleStatusChange = async (id, status) => {
+        try {
+            await axiosSecure.put(`/donations/${id}/status`, { status });
+            refetch(); // Refetch updated donations
+        } catch (error) {
+            console.error('Failed to update donation status', error);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            await axiosSecure.delete(`/donations/${id}`);
+            refetch(); // Refetch updated donations
+        } catch (error) {
+            console.error('Failed to delete donation', error);
+        }
+    };
+
     return (
         <>
             {role === 'donor' && (
@@ -42,8 +60,8 @@ const MyDonationRequests = () => {
                             <option value="">All</option>
                             <option value="pending">Pending</option>
                             <option value="inprogress">In Progress</option>
-                            <option value="done">Done</option>
-                            <option value="canceled">Canceled</option>
+                            <option value="Done">Done</option>
+                            <option value="Canceled">Canceled</option>
                         </select>
                     </div>
                     {donations.length > 0 ? (
@@ -72,23 +90,35 @@ const MyDonationRequests = () => {
                                                 <td className="p-3">
                                                     {donation.donationStatus === 'inprogress' && (
                                                         <>
-                                                            <button className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50">
+                                                            <button
+                                                                onClick={() => handleStatusChange(donation._id, 'Done')}
+                                                                className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50">
                                                                 Done
                                                             </button>
-                                                            <button className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 ml-2">
+                                                            <button
+                                                                onClick={() => handleStatusChange(donation._id, 'Canceled')}
+                                                                className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 ml-2">
                                                                 Cancel
                                                             </button>
                                                         </>
                                                     )}
-                                                    <button className="px-3 py-1 font-semibold rounded-md bg-blue-400 dark:bg-blue-600 text-gray-900 dark:text-gray-50 ml-2">
-                                                        Edit
-                                                    </button>
-                                                    <button className="px-3 py-1 font-semibold rounded-md bg-yellow-400 dark:bg-yellow-600 text-gray-900 dark:text-gray-50 ml-2">
+                                                    <button
+                                                        onClick={() => handleDelete(donation._id)}
+                                                        className="px-3 py-1 font-semibold rounded-md bg-yellow-400 dark:bg-yellow-600 text-gray-900 dark:text-gray-50 ml-2">
                                                         Delete
                                                     </button>
-                                                    <button className="px-3 py-1 font-semibold rounded-md bg-purple-400 dark:bg-purple-600 text-gray-900 dark:text-gray-50 ml-2">
-                                                        View
+                                                   <Link to={`/dashboard/update-donation-request/${donation._id}`}> <button
+                                                        className="px-3 py-1 font-semibold rounded-md bg-yellow-400 dark:bg-yellow-600 text-gray-900 dark:text-gray-50 ml-2">
+                                                        Edit
+                                                    </button></Link>
+                                                    <Link to= {`/blood-donation-request-detail/${donation._id}`}>
+                                                    <button
+                                                        className="px-3 py-1 font-semibold rounded-md bg-yellow-400 dark:bg-yellow-600 text-gray-900 dark:text-gray-50 ml-2">
+                                                       View
                                                     </button>
+                                                    </Link>
+                                                    
+                                                    
                                                 </td>
                                             </tr>
                                         ))}
