@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import { useContext, useState } from "react";
@@ -30,16 +30,23 @@ const AllBloodDonationRequests = () => {
         refetch(); // Refetch data when filter changes
     };
 
-    // Mutation to update donation status
-    const updateDonationStatus = useMutation({
-        mutationFn: async ({ id, status }) => {
-            await axiosSecure.put(`/donation/${id}/status`, { status });
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['donation', user?.email, statusFilter]);
+    const handleStatusChange = async (id, status) => {
+        try {
+            await axiosSecure.put(`/donations/${id}/status`, { status });
+            refetch(); // Refetch updated donations
+        } catch (error) {
+            console.error('Failed to update donation status', error);
         }
-    });
+    };
 
+    const handleDelete = async (id) => {
+        try {
+            await axiosSecure.delete(`/donations/${id}`);
+            refetch(); // Refetch updated donations
+        } catch (error) {
+            console.error('Failed to delete donation', error);
+        }
+    };
 
 
     
@@ -88,23 +95,24 @@ const AllBloodDonationRequests = () => {
                                                     {donation.donationStatus === 'inprogress' && (
                                                         <>
                                                             <button
-                                                                onClick={() => updateDonationStatus.mutate({ id: donation._id, status: 'done' })}
+                                                                 onClick={() => handleStatusChange(donation._id, 'Done')}
                                                                 className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50"
                                                             >
                                                                 Done
                                                             </button>
                                                             <button
-                                                                onClick={() => updateDonationStatus.mutate({ id: donation._id, status: 'canceled' })}
+                                                                 onClick={() => handleStatusChange(donation._id, 'Canceled')}
                                                                 className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 ml-2"
                                                             >
                                                                 Cancel
                                                             </button>
                                                         </>
                                                     )}
+                                                    <Link to={`/dashboard/update-donation-request/${donation._id}`}>
                                                     <button className="px-3 py-1 font-semibold rounded-md bg-blue-400 dark:bg-blue-600 text-gray-900 dark:text-gray-50 ml-2">
                                                         Edit
-                                                    </button>
-                                                    <button className="px-3 py-1 font-semibold rounded-md bg-yellow-400 dark:bg-yellow-600 text-gray-900 dark:text-gray-50 ml-2">
+                                                    </button></Link>
+                                                    <button  onClick={() => handleDelete(donation._id)} className="px-3 py-1 font-semibold rounded-md bg-yellow-400 dark:bg-yellow-600 text-gray-900 dark:text-gray-50 ml-2">
                                                         Delete
                                                     </button>
                                                 </>
@@ -112,13 +120,13 @@ const AllBloodDonationRequests = () => {
                                                 donation.donationStatus === 'inprogress' && (
                                                     <>
                                                         <button
-                                                            onClick={() => updateDonationStatus.mutate({ id: donation._id, status: 'done' })}
+                                                            onClick={() => handleStatusChange(donation._id, 'Done')}
                                                             className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50"
                                                         >
                                                             Done
                                                         </button>
                                                         <button
-                                                            onClick={() => updateDonationStatus.mutate({ id: donation._id, status: 'canceled' })}
+                                                            onClick={() => handleStatusChange(donation._id, 'Canceled')}
                                                             className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 ml-2"
                                                         >
                                                             Cancel
@@ -126,9 +134,10 @@ const AllBloodDonationRequests = () => {
                                                     </>
                                                 )
                                             )}
+                                              <Link to= {`/blood-donation-request-detail/${donation._id}`}>
                                             <button className="px-3 py-1 font-semibold rounded-md bg-purple-400 dark:bg-purple-600 text-gray-900 dark:text-gray-50 ml-2">
                                                 View
-                                            </button>
+                                            </button></Link>
                                         </td>
                                     </tr>
                                 ))}

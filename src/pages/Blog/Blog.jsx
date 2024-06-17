@@ -52,9 +52,9 @@ const Blog = () => {
 
                 <h1 className="mt-6 text-xl font-semibold">{blog.title}</h1>
                 <hr className="w-32 my-6 text-blue-500" />
-                <p className="text-sm">{blog.content}</p>
+                <p className="text-sm">{blog.content.slice(0,100)}</p>
                 <a
-                  href={`/blogs/${blog._id}`} // Link to the blog post page
+                  href={`/blog-detail/${blog._id}`} // Link to the blog post page
                   className="inline-block mt-4 text-blue-500 underline hover:text-blue-400"
                 >
                   Read more

@@ -19,6 +19,7 @@ import SearchPage from "../pages/SearchPage/SearchPage";
 import BloodDonationRequestDetail from "../pages/BloodDonationRequestDetail/BloodDonationRequestDetail";
 import Blog from "../pages/Blog/Blog";
 import UpdateDonationRequest from "../pages/Dashboard/Donor/UpdateDonationRequest";
+import BlogDetail from "../pages/Blog/BlogDetail";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path:'/blog',
         element:<Blog/> 
+      },
+      {
+        path:'/blog-detail/:id',
+        element:<BlogDetail/>
       }
       
 
@@ -92,7 +97,8 @@ const router = createBrowserRouter([
       {
         path:'add-blog',
         element:<AdminRoute><AddBlog/></AdminRoute>
-      }
+      },
+      
 
     ],
   }

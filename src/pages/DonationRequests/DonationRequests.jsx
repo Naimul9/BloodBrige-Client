@@ -1,13 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
+
 import { Link } from "react-router-dom";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const DonationRequests = () => {
-    const axiosSecure = useAxiosSecure();
+    const axiosPublic = useAxiosPublic();
     const { data: pendingDonations = [], isLoading } = useQuery({
         queryKey: ['pendingDonations'],
         queryFn: async () => {
-            const { data } = await axiosSecure.get('/donation');
+            const { data } = await axiosPublic.get('/donation');
             // Filter donations with status "pending"
             const pending = data.filter(donation => donation.donationStatus === 'pending');
             console.log(pending);
@@ -16,8 +17,8 @@ const DonationRequests = () => {
     });
 
     return (
-        <div className="pt-20">
-            <div className="overflow-x-auto">
+        <div className="container mx-auto pt-20">
+            <div className="overflow-x-auto font-semibold text-base">
                 <table className="table">
                     {/* head */}
                     <thead>
@@ -26,7 +27,7 @@ const DonationRequests = () => {
                             <th>Location</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th> </th>
+                            <th className="pl-6">Details </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,11 +37,11 @@ const DonationRequests = () => {
                                 <td>{pendingDonation.recipientDistrict}, {pendingDonation.recipientUpazila}</td>
                                 <td>{pendingDonation.donationDate}</td>
                                 <td>{pendingDonation.donationTime}</td>
-                                <th>
+                                <td>
                                     <Link to={`/blood-donation-request-detail/${pendingDonation._id}`}>
-                                        <button className="btn btn-ghost btn-md">View</button>
+                                        <button className="btn btn-ghost text-white btn-sm bg-red-400 hover:bg-red-500">View</button>
                                     </Link>
-                                </th>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
