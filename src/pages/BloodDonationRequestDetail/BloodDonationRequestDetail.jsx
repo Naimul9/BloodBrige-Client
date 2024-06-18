@@ -46,8 +46,9 @@ const BloodDonationRequestDetail = () => {
   };
 
   return (
-    <div className='py-20 w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
+    <div className='py-20 w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50 px-5'>
       <form>
+        <h1 className="text-4xl py-10 uppercase font-bold text-center text-red-700">Showing Detail of {pendingUser.recipientName} Request</h1>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
           <div className='space-y-6'>
             <div className='space-y-1 text-sm'>

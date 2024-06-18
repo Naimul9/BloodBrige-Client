@@ -8,28 +8,28 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 const AddBlog = () => {
     const { register, handleSubmit, reset } = useForm();
     const [content, setContent] = useState('');
-    const [thumbnail, setThumbnail] = useState('');
+    
     const axiosSecure = useAxiosSecure();
 
-    // const uploadImage = async (file) => {
-    //     const formData = new FormData();
-    //     formData.append('image', file);
+    const uploadImage = async (file) => {
+        const formData = new FormData();
+        formData.append('image', file);
 
-    //     const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
-    //         params: {
-    //             key: process.env.REACT_APP_IMGBB_API_KEY
-    //         }
-    //     });
+        const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
+            params: {
+                key: import.meta.env.VITE_IMAGE_HOSTING_KEY
+            }
+        });
 
-    //     return response.data.data.url;
-    // };
+        return response.data.data.url;
+    };
 
     const onSubmit = async (data) => {
         try {
-            // const thumbnailUrl = await uploadImage(data.thumbnail[0]);
+            const thumbnailUrl = await uploadImage(data.thumbnail[0]);
             const blogData = {
                 title: data.title,
-                // thumbnail: thumbnailUrl,
+                thumbnail: thumbnailUrl,
                 content: content,
                 status: 'draft'
             };
@@ -54,7 +54,7 @@ const AddBlog = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h2 className="text-2xl mb-4">Add New Blog</h2>
+            <h2 className="text-2xl mb-4 font-semibold ">Add New Blog</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label htmlFor="title" className="block text-sm font-medium">Title</label>
@@ -82,7 +82,7 @@ const AddBlog = () => {
                         className="border p-2"
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">Create</button>
+                <button type="submit" className="btn bg-rose-500 text-white font-semibold">Create</button>
             </form>
         </div>
     );

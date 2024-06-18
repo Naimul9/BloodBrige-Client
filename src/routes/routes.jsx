@@ -20,6 +20,8 @@ import BloodDonationRequestDetail from "../pages/BloodDonationRequestDetail/Bloo
 import Blog from "../pages/Blog/Blog";
 import UpdateDonationRequest from "../pages/Dashboard/Donor/UpdateDonationRequest";
 import BlogDetail from "../pages/Blog/BlogDetail";
+import Funding from "../pages/Funding/Funding";
+import GiveFund from "../pages/Funding/GiveFund";
 
 const router = createBrowserRouter([
   {
@@ -50,8 +52,12 @@ const router = createBrowserRouter([
       {
         path:'/blog-detail/:id',
         element:<BlogDetail/>
-      }
-      
+      },
+      {
+        path:'/funding',
+        element:<Funding/>
+      },
+     
 
     ],
   },

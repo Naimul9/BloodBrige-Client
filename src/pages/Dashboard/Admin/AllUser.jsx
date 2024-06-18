@@ -65,7 +65,7 @@ const AllUser = () => {
                 <tbody>
                     {filteredUsers.map((user, index) => (
                         <tr key={user._id}>
-                            <th>{index + 1}</th>
+                            <td>{index + 1}</td>
                             <td>
                                 <div className="flex items-center gap-3">
                                     <div className="avatar">
@@ -81,16 +81,16 @@ const AllUser = () => {
                             <td>{user.status}</td>
                             <td className="flex gap-2">
                                 {user.status === 'active' ? (
-                                    <button
+                                    <p
                                         onClick={() => updateUserStatus(user.email, 'blocked')}
                                         className="btn btn-xs"
                                     >
                                         Block
-                                    </button>
+                                    </p>
                                 ) : (
                                     <button
                                         onClick={() => updateUserStatus(user.email, 'active')}
-                                        className="btn btn-xs"
+                                        className="btn btn-sm"
                                     >
                                         Unblock
                                     </button>

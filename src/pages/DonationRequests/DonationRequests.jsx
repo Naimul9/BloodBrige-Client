@@ -17,12 +17,13 @@ const DonationRequests = () => {
     });
 
     return (
-        <div className="container mx-auto pt-20">
-            <div className="overflow-x-auto font-semibold text-base">
+        <div className="container mx-auto py-20">
+            <h1 className="text-5xl text-center mb-5 font-semibold mt-6 text-red-600 ">All Pending Donation Requests</h1>
+            <div className="p-10 overflow-x-auto font-semibold text-base lg:border border-red-300 rounded-lg">
                 <table className="table">
                     {/* head */}
                     <thead>
-                        <tr>
+                        <tr><th>Sl No.</th>
                             <th>Recipient Name</th>
                             <th>Location</th>
                             <th>Date</th>
@@ -31,8 +32,9 @@ const DonationRequests = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {pendingDonations.map(pendingDonation => (
+                        {pendingDonations.map((pendingDonation, index) => (
                             <tr key={pendingDonation._id}>
+                                <td>{index}</td>
                                 <td>{pendingDonation.recipientName}</td>
                                 <td>{pendingDonation.recipientDistrict}, {pendingDonation.recipientUpazila}</td>
                                 <td>{pendingDonation.donationDate}</td>

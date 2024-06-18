@@ -26,15 +26,12 @@ const Sidebar = () => {
       <div className='bg-gray-100 text-gray-800 flex justify-between md:hidden'>
         <div>
           <div className='block cursor-pointer p-4 font-bold'>
-            <Link to='/'>
-              <img
-                // className='hidden md:block'
-                src='/Blood.png'
-                alt='logo'
-                width='100'
-                height='100'
-              />
-            </Link>
+          <Link to='/'>
+           <div className='flex'>
+           <img className='w-auto h-14 pt-4' src="/bloodDrop.png" alt='' />
+           <p className='font-semibold text-black text-xl py-5 '> Blood <span className='text-red-700'>Bridge </span> </p>
+           </div>
+              </Link>
           </div>
         </div>
 
@@ -54,15 +51,12 @@ const Sidebar = () => {
       >
         <div>
           <div>
-            <div className='w-full hidden md:flex px-4 py-2 shadow-lg rounded-lg justify-center items-center bg-rose-100 mx-auto'>
+            <div className='w-full hidden md:flex px-4 py-2 shadow-lg rounded-lg justify-center items-center bg-black mx-auto'>
               <Link to='/'>
-                <img
-                  // className='hidden md:block'
-                  src='https://i.ibb.co/VVpFCsh/Blood.png'
-                  alt='logo'
-                  width='100'
-                  height='100'
-                />
+           <div className='flex'>
+           <img className='w-auto h-14 pt-4' src="/bloodDrop.png" alt='' />
+           <p className='font-semibold text-white text-xl py-5 '> Blood <span className='text-red-700'>Bridge </span> </p>
+           </div>
               </Link>
             </div>
           </div>

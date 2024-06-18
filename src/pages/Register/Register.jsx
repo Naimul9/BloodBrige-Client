@@ -1,41 +1,47 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useContext, useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { AuthContext } from '../../Provider/AuthProvider'
-import axios from 'axios'
+import { Link, useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { AuthContext } from '../../Provider/AuthProvider';
+import axios from 'axios';
 
 const Register = () => {
-  const navigate = useNavigate()
-  const { createUser, updateUserProfile, user, setUser } = useContext(AuthContext)
-  
+  const navigate = useNavigate();
+  const { createUser, updateUserProfile, user, setUser } = useContext(AuthContext);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
     const name = form.name.value;
-    const photo = form.photo.value;
+    const photo = form.photo.files[0];
     const bloodGroup = form.bloodGroup.value;
     const district = form.district.value;
     const upazila = form.upazila.value;
     const pass = form.password.value;
-
-    const currentUser = {
-      email,
-      name,
-      photo,
-      bloodGroup,
-      district,
-      upazila,
-      role: 'donor',
-      status: 'active',
-    };
+    const formData = new FormData();
+    formData.append('image', photo);
 
     try {
+      const { data } = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGE_HOSTING_KEY}`, formData);
+      const photoURL = data.data.display_url;
+
+      const currentUser = {
+        email,
+        name,
+        photo: photoURL,
+        bloodGroup,
+        district,
+        upazila,
+        role: 'donor',
+        status: 'active',
+      };
+
+      console.log(currentUser);
+
       await createUser(email, pass);
-      await updateUserProfile(name, photo);
-      const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/user`, currentUser);
-      setUser({ ...user, photoURL: photo, displayName: name });
+      await updateUserProfile(name, photoURL);
+      await axios.put(`${import.meta.env.VITE_API_URL}/user`, currentUser);
+      setUser({ ...user, photoURL, displayName: name });
       navigate('/');
       toast.success('SignUp Successful');
     } catch (err) {
@@ -44,29 +50,26 @@ const Register = () => {
     }
   };
 
-
-
-
-  const [data, setData] = useState([])
-  const [upData, setUpData] = useState([])
+  const [data, setData] = useState([]);
+  const [upData, setUpData] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch('/districts.json')
-      const result = await response.json()
-      setData(result)
+      const response = await fetch('/districts.json');
+      const result = await response.json();
+      setData(result);
     }
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await fetch('/upazilas.json')
-      const result = await response.json()
-      setUpData(result)
+    async function fetchUpData() {
+      const response = await fetch('/upazilas.json');
+      const result = await response.json();
+      setUpData(result);
     }
-    fetchData()
-  }, [])
+    fetchUpData();
+  }, []);
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
@@ -112,14 +115,14 @@ const Register = () => {
             </div>
             <div className='mt-4'>
               <label className='block mb-2 text-sm font-medium text-gray-600' htmlFor='photo'>
-                Photo URL
+                Photo
               </label>
               <input
                 id='photo'
                 autoComplete='photo'
                 name='photo'
-                className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300'
-                type='text'
+                className='file-input file-input-bordered file-input-sm file-input-red w-full max-w-sm'
+                type='file'
               />
             </div>
             <div className='mt-4'>
@@ -215,12 +218,8 @@ const Register = () => {
           style={{ backgroundImage: 'url(/bloodBridge.png)' }}
         ></div>
       </div>
-
-
-
-     
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

@@ -98,7 +98,7 @@ const DashboardShow = () => {
       {role === 'donor' && (
         <div className="container p-2">
           <div className="bg-base-200 h-16">
-            <h1 className="text-3xl font-semibold mt-10">Welcome {user?.displayName}</h1>
+            <h1 className="text-3xl font-semibold mt-10 ">Welcome {user?.displayName}</h1>
           </div>
           {donations.length > 0 && (
             <div className="mx-auto sm:p-4 text-gray-100 dark:text-gray-800">
@@ -172,8 +172,8 @@ const DashboardShow = () => {
 
 {role === 'admin' && (
                 <div className="container p-2">
-                    <div className="bg-base-200 h-16">
-                        <h1 className="text-3xl font-semibold mt-10">Welcome {user?.displayName}</h1>
+                    <div className="bg-base-200 h-16 rounded-lg">
+                        <h1 className="text-3xl font-semibold mt-10 py-3 px-5">  Welcome, {user?.displayName}</h1>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
                         {/* Card 1: Total Users (Donors) */}
@@ -181,8 +181,8 @@ const DashboardShow = () => {
                             <div className="flex items-center">
                                 <FaUsers className="text-4xl text-blue-500 mr-4" />
                                 <div>
-                                    <p className="text-lg font-semibold text-gray-200">Total Users (Donors)</p>
-                                    <p className="text-gray-400">{allUsers.length}</p>
+                                    <p className="text-lg font-semibold ">Total Users (Donors)</p>
+                                    <p className="">{allUsers.length}</p>
                                 </div>
                             </div>
                         </div>
@@ -191,8 +191,8 @@ const DashboardShow = () => {
                             <div className="flex items-center">
                                 <FaMoneyBillWave className="text-4xl text-yellow-500 mr-4" />
                                 <div>
-                                    <p className="text-lg font-semibold text-gray-200">Total Funding</p>
-                                    <p className="text-gray-400">${totalFunding}</p>
+                                    <p className="text-lg font-semibold ">Total Funding</p>
+                                    <p className="">${totalFunding}</p>
                                 </div>
                             </div>
                         </div>
@@ -201,8 +201,8 @@ const DashboardShow = () => {
                             <div className="flex items-center">
                                 <FaTint className="text-4xl text-red-500 mr-4" />
                                 <div>
-                                    <p className="text-lg font-semibold text-gray-200">Total Blood Donation Requests</p>
-                                    <p className="text-gray-400">{allDonations.length}</p>
+                                    <p className="text-lg font-semibold ">Total Blood Donation Requests</p>
+                                    <p className="">{allDonations.length}</p>
                                 </div>
                             </div>
                         </div>

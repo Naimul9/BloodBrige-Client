@@ -1,17 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../Provider/AuthProvider";
-
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 
-
 const CreateDonationRequest = () => {
- 
-
   const { user } = useContext(AuthContext);
-  const axiosSecure =useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
   const [data, setData] = useState([]);
   const [upData, setUpData] = useState([]);
+  const [userStatus, setUserStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -33,6 +31,20 @@ const CreateDonationRequest = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (user?.email) {
+      axiosSecure.get(`/user/${user.email}`)
+        .then(res => {
+          setUserStatus(res.data.status);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Error fetching user status:', error);
+          setLoading(false);
+        });
+    }
+  }, [user, axiosSecure]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -44,28 +56,40 @@ const CreateDonationRequest = () => {
     const donationDate = form.donationDate.value;
     const donationTime = form.donationTime.value;
     const requestMessage = form.requestMessage.value;
-    const email =user.email
-    const donationStatus = "pending"
+    const email = user.email;
+    const donationStatus = "pending";
 
     const donationData = {
       recipientName, recipientDistrict, recipientUpazila, hospitalName,
-      donationDate, donationTime, fullAddress, requestMessage, donationStatus,email
+      donationDate, donationTime, fullAddress, requestMessage, donationStatus, email
     };
+
     axiosSecure.put('/add-donation', donationData)
-    .then(res => {
+      .then(res => {
         console.log(res.data);
         if (res.data.insertedId || res.data.modifiedCount > 0) {
-            toast.success('Request added/updated Successfully');
+          toast.success('Request added/updated Successfully');
         }
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error('Error adding/updating request:', error);
         toast.error('Failed to add/update request');
-    });
+      });
 
-
-   console.log(donationData);
+    console.log(donationData);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (userStatus === 'blocked') {
+    return (
+      <div className='w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
+        <h1 className='text-2xl font-bold text-red-500'>Your account is blocked. You cannot create a donation request.</h1>
+      </div>
+    );
+  }
 
   return (
     <div className='w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
@@ -240,7 +264,6 @@ const CreateDonationRequest = () => {
         >
           Create
         </button>
-        
       </form>
     </div>
   );

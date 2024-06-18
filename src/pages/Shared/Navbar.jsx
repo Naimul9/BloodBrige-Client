@@ -9,7 +9,7 @@ const Navbar = () => {
 
   const { user, logOut } = useContext(AuthContext)
   return (
-    <div className='navbar fixed  z-10 bg-opacity-30 bg-black shadow-sm container lg:mx-[34.5px] md:mx-[75px]   py-1'>
+    <div className='navbar fixed  z-10 bg-opacity-30 bg-black shadow-sm  py-1'>
       <div className='flex-1'>
         <Link to='/' className='flex gap-2 items-center'>
           <img className='w-auto h-16' src="/bloodDrop.png" alt='' />
