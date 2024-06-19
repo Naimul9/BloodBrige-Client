@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../Provider/AuthProvider";
+import toast from "react-hot-toast";
 
 const AllUser = () => {
     const axiosSecure = useAxiosSecure();
@@ -11,6 +12,7 @@ const AllUser = () => {
     const updateUserStatus = async (email, status) => {
         try {
             await axiosSecure.put('/user/status', { email, status });
+            toast.success(`Status Successfully Changed to ${status}`)
             refetch();
         } catch (error) {
             console.error('Error updating user status:', error);
@@ -20,6 +22,7 @@ const AllUser = () => {
     const updateUserRole = async (email, role) => {
         try {
             await axiosSecure.put('/user/role', { email, role });
+            toast.success(`Role Changed to ${role}`)
             refetch();
         } catch (error) {
             console.error('Error updating user role:', error);
@@ -81,16 +84,16 @@ const AllUser = () => {
                             <td>{user.status}</td>
                             <td className="flex gap-2">
                                 {user.status === 'active' ? (
-                                    <p
+                                    <button
                                         onClick={() => updateUserStatus(user.email, 'blocked')}
-                                        className="btn btn-xs"
+                                        className="btn btn-xs  my-3"
                                     >
                                         Block
-                                    </p>
+                                    </button>
                                 ) : (
                                     <button
                                         onClick={() => updateUserStatus(user.email, 'active')}
-                                        className="btn btn-sm"
+                                        className="btn btn-xs my-3"
                                     >
                                         Unblock
                                     </button>
@@ -98,7 +101,7 @@ const AllUser = () => {
                                 {user.role !== 'volunteer' && (
                                     <button
                                         onClick={() => updateUserRole(user.email, 'volunteer')}
-                                        className="btn btn-xs"
+                                        className="btn btn-xs my-3"
                                     >
                                         Make Volunteer
                                     </button>
@@ -106,7 +109,7 @@ const AllUser = () => {
                                 {user.role !== 'admin' && (
                                     <button
                                         onClick={() => updateUserRole(user.email, 'admin')}
-                                        className="btn btn-xs"
+                                        className="btn btn-xs my-3"
                                     >
                                         Make Admin
                                     </button>
@@ -114,7 +117,7 @@ const AllUser = () => {
                                 {user.role !== 'donor' && (
                                     <button
                                         onClick={() => updateUserRole(user.email, 'donor')}
-                                        className="btn btn-xs"
+                                        className="btn btn-xs my-3"
                                     >
                                         Make Donor
                                     </button>

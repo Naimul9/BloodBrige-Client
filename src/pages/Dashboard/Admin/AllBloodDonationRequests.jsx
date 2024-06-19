@@ -6,6 +6,8 @@ import useRole from "../../../hooks/useRole";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MdOutlineCancel, MdOutlineDoneAll, MdOutlineModeEdit } from "react-icons/md";
 import { AiOutlineDelete } from "react-icons/ai";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const AllBloodDonationRequests = () => {
   const axiosSecure = useAxiosSecure();
@@ -16,7 +18,7 @@ const AllBloodDonationRequests = () => {
   const [role] = useRole();
   const queryClient = useQueryClient();
 
-  const { data: { donations = [], total = 0 } = {}, refetch } = useQuery({
+  const { data: { donations = [], total = 0 } = {}, isLoading, refetch } = useQuery({
     queryKey: ['donation', user?.email, statusFilter, currentPage],
     queryFn: async () => {
       const { data } = await axiosSecure.get('/donation', {
@@ -33,6 +35,7 @@ const AllBloodDonationRequests = () => {
 
   const handleStatusFilterChange = (e) => {
     setStatusFilter(e.target.value);
+    
     setCurrentPage(1); // Reset to the first page when filter changes
     refetch(); // Refetch data when filter changes
   };
@@ -40,18 +43,41 @@ const AllBloodDonationRequests = () => {
   const handleStatusChange = async (id, status) => {
     try {
       await axiosSecure.put(`/donations/${id}/status`, { status });
+      toast.success(`Successfully ${status}`)
       refetch(); // Refetch updated donations
     } catch (error) {
+        toast.error('Failed to Update')
       console.error('Failed to update donation status', error);
+
     }
   };
 
   const handleDelete = async (id) => {
-    try {
-      await axiosSecure.delete(`/donations/${id}`);
-      refetch(); // Refetch updated donations
-    } catch (error) {
-      console.error('Failed to delete donation', error);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    });
+  
+    if (result.isConfirmed) {
+      try {
+        await axiosSecure.delete(`/donations/${id}`);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your donation request has been deleted.",
+          icon: "success"
+        });
+        refetch()
+        // Invalidate and refetch the donations query to reflect the updated data
+        queryClient.invalidateQueries(['donations']);
+      } catch (error) {
+        console.error('Failed to delete donation', error);
+        toast.error("Failed to delete donation request.");
+      }
     }
   };
 
@@ -61,6 +87,8 @@ const AllBloodDonationRequests = () => {
     setCurrentPage(newPage);
     refetch();
   };
+
+  
 
   return (
     <div className="container mx-auto p-4">
@@ -118,7 +146,8 @@ const AllBloodDonationRequests = () => {
                             <>
                               <button
                                 onClick={() => handleStatusChange(donation._id, 'Done')}
-                                className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2"
+                                className="tooltip px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2"
+                                data-tip="Done"
                               >
                                 <MdOutlineDoneAll />
                               </button>
@@ -132,11 +161,12 @@ const AllBloodDonationRequests = () => {
                             </>
                           )}
                           <Link to={`/dashboard/update-donation-request/${donation._id}`}>
-                            <button className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2">
+                            <button className="tooltip px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2"
+                            data-tip="Edit">
                               <MdOutlineModeEdit />
                             </button>
                           </Link>
-                          <button onClick={() => handleDelete(donation._id)} className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0">
+                          <button onClick={() => handleDelete(donation._id)} className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 tooltip" data-tip="Delete">
                             <AiOutlineDelete />
                           </button>
                         </>
@@ -145,13 +175,13 @@ const AllBloodDonationRequests = () => {
                           <>
                             <button
                               onClick={() => handleStatusChange(donation._id, 'Done')}
-                              className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50 mb-2 md:mb-0 md:mr-2"
+                              className="px-3 py-1 font-semibold rounded-md  mb-2 md:mb-0 md:mr-2 text-xl tooltip" data-tip="Done"
                             >
                               <MdOutlineDoneAll />
                             </button>
                             <button
                               onClick={() => handleStatusChange(donation._id, 'Canceled')}
-                              className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 mb-2 md:mb-0"
+                              className="px-3 py-1 font-semibold rounded-md mb-2 md:mb-0 text-xl tooltip" data-tip="Cancel"
                             >
                               <MdOutlineCancel />
                             </button>

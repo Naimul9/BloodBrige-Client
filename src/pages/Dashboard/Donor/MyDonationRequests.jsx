@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../Provider/AuthProvider";
@@ -6,6 +6,8 @@ import { Link, NavLink } from "react-router-dom";
 import useRole from "../../../hooks/useRole";
 import { MdOutlineCancel, MdOutlineDoneAll, MdOutlineModeEdit } from "react-icons/md";
 import { AiOutlineDelete } from "react-icons/ai";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const MyDonationRequests = () => {
     const axiosSecure = useAxiosSecure();
@@ -46,11 +48,31 @@ const MyDonationRequests = () => {
       };
     
       const handleDelete = async (id) => {
-        try {
-          await axiosSecure.delete(`/donations/${id}`);
-          refetch(); // Refetch updated donations
-        } catch (error) {
-          console.error('Failed to delete donation', error);
+        const result = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        });
+      
+        if (result.isConfirmed) {
+          try {
+            await axiosSecure.delete(`/donations/${id}`);
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your donation request has been deleted.",
+              icon: "success"
+            });
+            refetch()
+            // Invalidate and refetch the donations query to reflect the updated data
+            QueryClient.invalidateQueries(['donations']);
+          } catch (error) {
+            console.error('Failed to delete donation', error);
+            toast.error("Failed to delete donation request.");
+          }
         }
       };
     

@@ -4,7 +4,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { AuthContext } from '../../../Provider/AuthProvider';
 import useRole from '../../../hooks/useRole';
-import { MdDelete, MdEdit, MdOutlinePublishedWithChanges, MdOutlineUnpublished } from "react-icons/md"
+import { MdDelete, MdEdit, MdOutlinePublishedWithChanges, MdOutlineUnpublished } from "react-icons/md";
+import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const ContentManagement = () => {
     const navigate = useNavigate();
@@ -29,6 +31,7 @@ const ContentManagement = () => {
             await axiosSecure.put(`/blogs/${id}/publish`);
         },
         onSuccess: () => {
+            toast.success('Blog Published Successfully');
             queryClient.invalidateQueries(['blogs', filter]); // Invalidate cache for updated data
         }
     });
@@ -39,6 +42,7 @@ const ContentManagement = () => {
             await axiosSecure.put(`/blogs/${id}/unpublish`);
         },
         onSuccess: () => {
+            toast.success('Blog Drafted Successfully');
             queryClient.invalidateQueries(['blogs', filter]); // Invalidate cache for updated data
         }
     });
@@ -46,15 +50,42 @@ const ContentManagement = () => {
     // Mutation to delete a blog
     const deleteBlog = useMutation({
         mutationFn: async (id) => {
-            await axiosSecure.delete(`/blogs/${id}`);
+            const result = await Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await axiosSecure.delete(`/blogs/${id}`);
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your blog post has been deleted.",
+                        icon: "success"
+                    });
+                } catch (error) {
+                    toast.error("Failed to delete blog post.");
+                    throw new Error(error);
+                }
+            } else {
+                throw new Error("User cancelled the deletion.");
+            }
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(['blogs', filter]); // Invalidate cache for updated data
+            queryClient.invalidateQueries(['blogs']); // Invalidate cache to fetch updated data
+        },
+        onError: (error) => {
+            console.error("Error deleting blog:", error);
         }
     });
 
-    const handleEditBlog = () => {
-        // navigate(`/edit-blog/${id}`);
+    const handleEditBlog = (id) => {
+        navigate(`/dashboard/edit-blog/${id}`);
     };
 
     return (
@@ -72,103 +103,69 @@ const ContentManagement = () => {
                 </select>
             </div>
             {isLoading ? (
-                <p>Loading...</p>
-            ) :
-            //  (
-            //     <table className="table-auto w-full">
-            //         <thead>
-            //             <tr>
-            //                 <th className="px-4 py-2">Title</th>
-            //                 <th className="px-4 py-2">Content</th>
-            //                 <th className="px-4 py-2">Status</th>
-            //                 <th className="px-4 py-2">Actions</th>
-            //             </tr>
-            //         </thead>
-            //         <tbody>
-            //             {blogs.map(blog => (
-            //                 <tr key={blog._id}>
-            //                     <td className="border px-4 py-2">{blog.title}</td>
-            //                     <td className="border px-4 py-2">{blog.content.slice(0,100)}</td>
-            //                     <td className="border px-4 py-2">{blog.status}</td>
-            //                     <td className="border px-4 py-2">
-            //                         {role === 'admin' && (
-            //                             <div className="flex space-x-2">
-            //                                 {blog.status === 'draft' ? (
-            //                                     <button onClick={() => publishBlog.mutate(blog._id)} className="btn btn-success">Publish</button>
-            //                                 ) : (
-            //                                     <button onClick={() => unpublishBlog.mutate(blog._id)} className="btn btn-warning">Draft</button>
-            //                                 )}
-            //                                 <button onClick={() => handleEditBlog(blog._id)} className="btn btn-info">Edit</button>
-            //                                 <button onClick={() => deleteBlog.mutate(blog._id)} className="btn btn-danger">Delete</button>
-            //                             </div>
-            //                         )}
-            //                     </td>
-            //                 </tr>
-            //             ))}
-            //         </tbody>
-            //     </table>
-            // )
-        (  <div className="overflow-x-auto">
-  <table className="table">
-    {/* head */}
-    <thead>
-        <tr>
-        <th>
-           Sl No.
-        </th>
-        <th>Image</th>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Action</th>
-        <th>Edit</th>
-        <th>Delete</th>
-      </tr>
-    </thead>
-    <tbody>
-      {/* row 1 */}
-      {blogs.map((blog, index) =>    <tr key={blog._id}>
-        <th>
-         {index+1}
-        </th>
-        <td>
-          <div className="flex items-center gap-3">
-            <div className="avatar">
-              <div className="mask mask-squircle w-16 h-16">
-                <img src={blog.thumbnail}/>
-              </div>
-            </div>
-            
-          </div>
-        </td>
-        <td className='font-semibold text-base'>
-         {blog.title}
-        </td>
-        <td className='font-semibold text-base'>{blog.status}</td>
-        <td>
-        {role === 'admin' && (
-                                       <div className="">
-                                             {blog.status === 'draft' ? (
-                                                 <button onClick={() => publishBlog.mutate(blog._id)} className="btn btn-sm bg-green-400 "><MdOutlinePublishedWithChanges />
-</button>
-                                             ) : (
-                                                 <button onClick={() => unpublishBlog.mutate(blog._id)} className="btn btn-sm bg-red-400 "> <MdOutlineUnpublished /> </button>
-                                             )}
-                                             </div>
-        )}
-        </td>
-        <td>
-            <button className='btn btn-sm ' > <MdEdit />  </button>
-        </td>
-        <td>
-            <button className='btn btn-sm text-red-400 text-xl '>  <MdDelete /> </button>
-        </td>
-      </tr> )}
-
-    </tbody>
-  </table>
-</div>)
-            
-            }
+                <span className="loading text-center flex items-center loading-ring loading-lg"></span>
+            ) : (
+                <div className="overflow-x-auto">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Sl No.</th>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {blogs.map((blog, index) => (
+                                <tr key={blog._id}>
+                                    <th>{index + 1}</th>
+                                    <td>
+                                        <div className="flex items-center gap-3">
+                                            <div className="avatar">
+                                                <div className="mask mask-squircle w-16 h-16">
+                                                    <img src={blog.thumbnail} alt={blog.title} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className='font-semibold text-base'>{blog.title}</td>
+                                    <td className='font-semibold text-base'>{blog.status}</td>
+                                    <td>
+                                        {role === 'admin' && (
+                                            <div className="">
+                                                {blog.status === 'draft' ? (
+                                                    <button onClick={() => publishBlog.mutate(blog._id)} className="btn btn-sm bg-green-400">
+                                                        <MdOutlinePublishedWithChanges />
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={() => unpublishBlog.mutate(blog._id)} className="btn btn-sm bg-red-400">
+                                                        <MdOutlineUnpublished />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <button onClick={() => handleEditBlog(blog._id)} className='btn btn-sm'>
+                                            <MdEdit />
+                                        </button>
+                                    </td>
+                                    <td>
+                                        {role === 'admin' && (
+                                            <button onClick={() => deleteBlog.mutate(blog._id)} className='btn btn-sm text-red-400 text-xl'>
+                                                <MdDelete />
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 };

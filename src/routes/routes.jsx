@@ -22,6 +22,9 @@ import UpdateDonationRequest from "../pages/Dashboard/Donor/UpdateDonationReques
 import BlogDetail from "../pages/Blog/BlogDetail";
 import Funding from "../pages/Funding/Funding";
 import GiveFund from "../pages/Funding/GiveFund";
+import DonorRoute from "./DonorRoute";
+
+import AdminVolunteerRoute from "./AdminVolunteerRoute";
 
 const router = createBrowserRouter([
   {
@@ -78,11 +81,11 @@ const router = createBrowserRouter([
       },
       {
         path:'my-donation-requests',
-        element:<MyDonationRequests/>
+        element:<DonorRoute><MyDonationRequests/></DonorRoute>
       },
       {
         path:'create-donation-request',
-        element:<CreateDonationRequest/>
+        element:<DonorRoute><CreateDonationRequest/></DonorRoute>
       },
       {
         path:'update-donation-request/:id', 
@@ -94,11 +97,11 @@ const router = createBrowserRouter([
       },
       {
         path:'all-blood-donation-request',
-        element:<AdminRoute><AllBloodDonationRequests/></AdminRoute>
+        element: <AdminVolunteerRoute><AllBloodDonationRequests/></AdminVolunteerRoute>
       },
       {
         path:'content-management',
-        element:<AdminRoute><ContentManagement/></AdminRoute>
+        element:<AdminVolunteerRoute><ContentManagement/></AdminVolunteerRoute>
       },
       {
         path:'add-blog',

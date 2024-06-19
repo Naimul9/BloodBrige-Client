@@ -13,9 +13,10 @@ const SearchPage = () => {
   const { data: allDonors = [], isLoading, refetch } = useQuery({
     queryKey: ['donation', searchParams],
     queryFn: async () => {
-      const { data } = await axiosPublic.get('/donation');
+      const { data } = await axiosPublic.get('/users');
       return data;
     },
+    enabled: false, // Disable automatic query execution
   });
 
   const [data, setData] = useState([]);
@@ -55,17 +56,19 @@ const SearchPage = () => {
   const filteredDonors = allDonors.filter((donor) => {
     return (
       (!searchParams.bloodGroup || donor.bloodGroup === searchParams.bloodGroup) &&
-      (!searchParams.district || donor.recipientDistrict === searchParams.district) &&
-      (!searchParams.upazila || donor.recipientUpazila === searchParams.upazila)
+      (!searchParams.district || donor.district === searchParams.district) &&
+      (!searchParams.upazila || donor.upazila === searchParams.upazila)
     );
   });
 
   return (
-    <div>
-      <h2>Search Donors</h2>
+    <div className='py-20'>
+      <div className='bg-rose-100 lg:h-[384px] h-[700px] container mx-auto rounded-lg'>
+      <h2 className='lg:text-6xl text-4xl text-center font-semibold mt-5 pt-20  '>Search Donors</h2>
       <form onSubmit={handleSearch}>
-        {/* Blood group */}
-        <div className='mt-4'>
+    <div className='flex lg:flex-row flex-col gap-5 items-center container justify-center mx-auto mt-8'>
+    {/* Blood group */}
+    <div className='mt-4'>
           <label
             className='block mb-2 text-sm font-medium text-gray-600 '
             htmlFor='bloodGroup'
@@ -133,30 +136,61 @@ const SearchPage = () => {
             ))}
           </select>
         </div>
+        <div className='mt-4'>
+        <label
+            className='block mb-7 text-sm font-medium text-gray-600 '
+            htmlFor='upazila'
+          >
+           
+          </label>
 
-        <div className='mt-6'>
           <button
             type='submit'
-            className='w-full px-6 py-3 bg-red-700 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform rounded-lg hover:bg-red-800'
+            className='block w-full px-4 py-3 bg-red-700 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform rounded-lg hover:bg-red-800'
           >
             Search
           </button>
         </div>
+  
+  
+    </div>
+
+
+       
       </form>
+      </div>
 
       {isLoading ? <p>Loading...</p> : null}
 
       <div className='mt-6'>
-        <h3>Donors List</h3>
-        {filteredDonors.length === 0 && !isLoading && <p>No donors found.</p>}
+        
+        {filteredDonors.length === 0 && !isLoading && <p className='text-3xl font-bold text-center'>No donors found.</p>}
         {filteredDonors.length > 0 && (
-          <ul>
-            {filteredDonors.map((donor) => (
-              <li key={donor._id}>
-                {donor.recipientName} - {donor.bloodGroup} - {donor.recipientDistrict} - {donor.recipientUpazila}
-              </li>
-            ))}
-          </ul>
+          <div className="overflow-x-auto ">
+          <table className="table container mx-auto text-center text-base">
+            {/* head */}
+            <thead className='bg-red-200 '>
+              <tr>
+                <th>Sl No.</th>
+                <th>Name</th>
+                <th>Blood Group</th>
+                <th>District</th>
+                <th>Upazila</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* row 1 */}
+              {filteredDonors.map((donor,index) =>   <tr key={donor._id} className="bg-base-200">
+                <th>{index+1}</th>
+                <td>{donor.name}</td>
+                <td> {donor.bloodGroup} </td>
+                <td>{donor.district}</td>
+                <td>{donor.upazila}</td>
+              </tr>
+)}
+            </tbody>
+          </table>
+        </div>
         )}
       </div>
     </div>

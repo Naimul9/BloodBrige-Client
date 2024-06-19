@@ -1,11 +1,14 @@
 import { useContext } from "react";
 import { AuthContext } from "../../Provider/AuthProvider";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useRole from "../../hooks/useRole";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { FaUsers, FaMoneyBillWave, FaTint } from 'react-icons/fa'; 
 import toast from "react-hot-toast";
+import { MdOutlineCancel, MdOutlineDoneAll, MdOutlineModeEdit } from "react-icons/md";
+import { AiOutlineDelete } from "react-icons/ai";
+import Swal from "sweetalert2";
 
 const DashboardShow = () => {
   const axiosSecure = useAxiosSecure();
@@ -13,20 +16,22 @@ const DashboardShow = () => {
   const [role] = useRole();
   console.log(role);
 
-  const { data: donations = [], refetch } = useQuery({
-    queryKey: ['donation', user?.email],
+  const { data: {donations = [] }={}, refetch } = useQuery({
+    queryKey: ['donation', user?.email, 'pending'],
     queryFn: async () => {
       const { data } = await axiosSecure.get(`/donation/${user.email}`);
+      console.log(data);
       return data;
     },
     enabled: !!user?.email, // Ensures the query runs only if the user email is available
   });
 
   // get all donation req
-  const { data: allDonations = [], } = useQuery({
+  const { data: { total } = {} } = useQuery({
     queryKey: ['donation',],
     queryFn: async () => {
       const { data } = await axiosSecure.get('/donation');
+      console.log(data);
       return data;
     },
   });
@@ -36,6 +41,7 @@ const DashboardShow = () => {
     queryKey: ['donor'],
     queryFn: async () => {
         const { data } = await axiosSecure.get('/users/donor');
+        console.log(data);
         // Filter to get only donors (you should adjust this filter based on your actual data structure)
         return data;
     },
@@ -45,43 +51,43 @@ const DashboardShow = () => {
 
   // ---------------------
 
-  const handleMarkDone = async () => {
-    const donationStatus = {
-      
-      donationStatus: "Done",
-     
-    };
 
+
+  const handleStatusChange = async (id, status) => {
     try {
-      await axiosSecure.put(`/add-donation`, donationStatus);
-      toast.success("Donation request marked as done.");
-      refetch(); // Refresh donation data
+      await axiosSecure.put(`/donations/${id}/status`, { status });
+      refetch(); // Refetch updated donations
     } catch (error) {
-      toast.error("Failed to mark donation as done.");
+      console.error('Failed to update donation status', error);
     }
   };
 
-  const handleMarkCancelled = async (donationId) => {
-    try {
-      await axiosSecure.put(`/donation/${donationId}`, { donationStatus: 'cancelled' });
-      toast.success("Donation request cancelled.");
-      refetch(); // Refresh donation data
-    } catch (error) {
-      toast.error("Failed to cancel donation request.");
-    }
-  };
 
-  const handleEdit = (donationId) => {
-    history.push(`/edit-donation/${donationId}`);
-  };
 
-  const handleDelete = async (donationId) => {
-    if (window.confirm("Are you sure you want to delete this donation request?")) {
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    });
+  
+    if (result.isConfirmed) {
       try {
-        await axiosSecure.delete(`/donation/${donationId}`);
-        toast.success("Donation request deleted successfully.");
-        refetch(); // Refresh donation data
+        await axiosSecure.delete(`/donations/${id}`);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your donation request has been deleted.",
+          icon: "success"
+        });
+        refetch()
+        // Invalidate and refetch the donations query to reflect the updated data
+        QueryClient.invalidateQueries(['donations']);
       } catch (error) {
+        console.error('Failed to delete donation', error);
         toast.error("Failed to delete donation request.");
       }
     }
@@ -112,6 +118,7 @@ const DashboardShow = () => {
                       <th className="p-3">Donation Date</th>
                       <th className="p-3">Donation Time</th>
                       <th className="p-3">Status</th>
+                      <th className="p-3">Donor Information</th> 
                       <th className="p-3">Actions</th>
                     </tr>
                   </thead>
@@ -123,30 +130,67 @@ const DashboardShow = () => {
                         <td className="p-3">{donation.donationDate}</td>
                         <td className="p-3">{donation.donationTime}</td>
                         <td className="p-3">{donation.donationStatus}</td>
-                        <td className="p-3">
-                          {donation.donationStatus === 'inprogress' && (
-                            <>
-                              <button onClick={handleMarkDone} className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50">
-                                Done
-                              </button>
-                              <button onClick={handleMarkCancelled} className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 ml-2">
-                                Cancel
-                              </button>
-                            
-                                <td>{donation.donorName}</td>
-                                <td>{donation.donorEmail}</td>
-                             
-                            </>
+                        {donation.donationStatus === 'inprogress' ? (
+                            <td> 
+                              {donation.donorName} <br />
+                              {donation.donorEmail}
+                            </td>
+                          ) : (
+                            <td></td>
                           )}
-                          <button className="px-3 py-1 font-semibold rounded-md bg-blue-400 dark:bg-blue-600 text-gray-900 dark:text-gray-50 ml-2">
-                            Edit
-                          </button>
-                          <button onClick={handleDelete} className="px-3 py-1 font-semibold rounded-md bg-yellow-400 dark:bg-yellow-600 text-gray-900 dark:text-gray-50 ml-2">
-                            Delete
-                          </button>
-                          <button className="px-3 py-1 font-semibold rounded-md bg-purple-400 dark:bg-purple-600 text-gray-900 dark:text-gray-50 ml-2">
-                            View
-                          </button>
+    
+                        <td className="p-3 flex flex-col md:flex-row">
+                          {role === 'donor' ? (
+                            <>
+                              {donation.donationStatus === 'inprogress' && (
+                                <>
+                                  <button
+                                    onClick={() => handleStatusChange(donation._id, 'Done')}
+                                    className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2"
+                                  >
+                                    <MdOutlineDoneAll />
+                                  </button>
+                                  <button
+                                    onClick={() => handleStatusChange(donation._id, 'Canceled')}
+                                    className="tooltip px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2"
+                                    data-tip="Cancel"
+                                  >
+                                    <MdOutlineCancel />
+                                  </button>
+                                </>
+                              )}
+                              <Link to={`/dashboard/update-donation-request/${donation._id}`}>
+                                <button className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2">
+                                  <MdOutlineModeEdit />
+                                </button>
+                              </Link>
+                              <button onClick={() => handleDelete(donation._id)} className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0">
+                                <AiOutlineDelete />
+                              </button>
+                            </>
+                          ) : (
+                            donation.donationStatus === 'inprogress' && (
+                              <>
+                                <button
+                                  onClick={() => handleStatusChange(donation._id, 'Done')}
+                                  className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50 mb-2 md:mb-0 md:mr-2"
+                                >
+                                  <MdOutlineDoneAll />
+                                </button>
+                                <button
+                                  onClick={() => handleStatusChange(donation._id, 'Canceled')}
+                                  className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 mb-2 md:mb-0"
+                                >
+                                  <MdOutlineCancel />
+                                </button>
+                              </>
+                            )
+                          )}
+                          <Link to={`/blood-donation-request-detail/${donation._id}`}>
+                            <button className="px-3 ml-2 py-1 font-semibold rounded-md bg-purple-400 dark:bg-purple-600 text-gray-900 dark:text-gray-50">
+                              View
+                            </button>
+                          </Link>
                         </td>
                       </tr>
                     ))}
@@ -170,7 +214,7 @@ const DashboardShow = () => {
         </div>
       )}
 
-{role === 'admin' && (
+{ (role === "admin" || role ==="volunteer")  && (
                 <div className="container p-2">
                     <div className="bg-base-200 h-16 rounded-lg">
                         <h1 className="text-3xl font-semibold mt-10 py-3 px-5">  Welcome, {user?.displayName}</h1>
@@ -202,7 +246,7 @@ const DashboardShow = () => {
                                 <FaTint className="text-4xl text-red-500 mr-4" />
                                 <div>
                                     <p className="text-lg font-semibold ">Total Blood Donation Requests</p>
-                                    <p className="">{allDonations.length}</p>
+                                    <p className="">{total}</p>
                                 </div>
                             </div>
                         </div>
