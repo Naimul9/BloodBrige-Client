@@ -18,6 +18,7 @@ const Register = () => {
     const district = form.district.value;
     const upazila = form.upazila.value;
     const pass = form.password.value;
+    const confirmPass = form.confirmPassword.value;
     const formData = new FormData();
     formData.append('image', photo);
 
@@ -37,6 +38,11 @@ const Register = () => {
       };
 
       console.log(currentUser);
+
+      if (pass !== confirmPass) {
+        toast.error('Passwords do not match.');
+        return;
+      }
 
       await createUser(email, pass);
       await updateUserProfile(name, photoURL);
@@ -194,6 +200,24 @@ const Register = () => {
                 name='password'
                 className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300'
                 type='password'
+              />
+            </div>
+            <div className='mt-4'>
+            <div className='flex justify-between'>
+              <label
+                className='block mb-2 text-sm font-medium text-gray-600'
+                htmlFor='confirmPassword'
+              >
+                Confirm Password
+              </label>
+              </div>
+              <input
+                id='confirmPassword'
+                autoComplete='new-password'
+                name='confirmPassword'
+                className='block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300'
+                type='password'
+                required
               />
             </div>
             <div className='mt-6'>

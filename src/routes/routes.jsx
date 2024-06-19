@@ -89,7 +89,7 @@ const router = createBrowserRouter([
       },
       {
         path:'update-donation-request/:id', 
-        element:<UpdateDonationRequest/>
+        element:<PrivateRoute><UpdateDonationRequest/></PrivateRoute> 
       },
       {
         path:'all-users',

@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { AuthContext } from "../../../Provider/AuthProvider";
+import axios from "axios";
 
 const UpdateDonationRequest = () => {
   const { user } = useContext(AuthContext);
@@ -12,11 +13,11 @@ const UpdateDonationRequest = () => {
   const [data, setData] = useState([]);
   const [upData, setUpData] = useState([]);
   const [editable, setEditable] = useState(false); // State to manage edit mode
-  
+  const [selectedFile, setSelectedFile] = useState(null);
   
 
   // Fetch user profile data
-  const { data: User = {}, isLoading } = useQuery({
+  const { data: User = {}, isLoading, refetch } = useQuery({
     queryKey: ["user", user?.email],
     queryFn: async () => {
       const { data } = await axiosSecure.get(`/user/${user.email}`);
@@ -51,13 +52,30 @@ const UpdateDonationRequest = () => {
     const district = form.district.value;
     const upazila = form.upazila.value;
     const bloodGroup = form.bloodGroup.value
+
+    let photoURL = User.photo;
+    
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      try {
+        const { data } = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGE_HOSTING_KEY}`, formData);
+        photoURL = data.data.display_url;
+      } catch (error) {
+        toast.error("Failed to upload image");
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
   
     const userData ={
       ...User,
       name: name,
       district:district,
       upazila:upazila,
-      bloodGroup: bloodGroup
+      bloodGroup: bloodGroup,
+      email : user.email,
+      photo:photoURL
     }
     
 
@@ -65,7 +83,8 @@ const UpdateDonationRequest = () => {
       const response = await axiosSecure.put(`/user`, userData); // Assuming this endpoint updates user status
       if (response.data.modifiedCount > 0) {
         toast.success("Donation request updated successfully");
-        setEditable(false); // Disable edit mode after successful update
+        setEditable(false);
+        refetch() // Disable edit mode after successful update
       } else {
         toast.error("Failed to update donation request");
       }
@@ -84,9 +103,9 @@ const UpdateDonationRequest = () => {
  
 
   // Handle file selection
-  // const handleFileChange = (e) => {
-  //   setSelectedFile(e.target.files[0]);
-  // };
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -107,7 +126,7 @@ const UpdateDonationRequest = () => {
                 <input
                   type="file"
                   accept="image/*"
-                  // onChange={handleFileChange}
+                  onChange={handleFileChange}
                   className="mt-2"
                 />
               )}
@@ -124,7 +143,7 @@ const UpdateDonationRequest = () => {
                 id="name"
                 type="text"
                 readOnly={!editable}
-                placeholder={user?.name}
+                placeholder={User.name}
                 required
               />
             </div>
@@ -160,7 +179,7 @@ const UpdateDonationRequest = () => {
                   className="block w-full px-4 py-2 text-gray-700 bg-white border border-red-300 focus:outline-red-500 rounded-md"
                   disabled={!editable}
                   required
-                  placeholder={User.district}
+                  defaultValue={User.district}
                 >
                   {data.map((district) => (
                     <option value={district.name} key={district._id}>
@@ -180,7 +199,7 @@ const UpdateDonationRequest = () => {
                   className="block w-full px-4 py-2 text-gray-700 bg-white border border-red-300 focus:outline-red-500 rounded-md"
                   disabled={!editable}
                   required
-                  placeholder={User.upazila}
+                  defaultValue={User.upazila}
                 >
                   {upData.map((upazila) => (
                     <option value={upazila.name} key={upazila._id}>
@@ -203,7 +222,7 @@ const UpdateDonationRequest = () => {
                 type="text"
                 readOnly
                 required
-                placeholder={User.bloodGroup}
+                defaultValue={User.bloodGroup}
               >
                  <option value='A+'>A+</option>
                 <option value='A-'>A-</option>
