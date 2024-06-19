@@ -80,7 +80,7 @@ const UpdateDonationRequest = () => {
     
 
     try {
-      const response = await axiosSecure.put(`/user`, userData); // Assuming this endpoint updates user status
+      const response = await axiosSecure.put(`/user/update`, userData); // Assuming this endpoint updates user status
       if (response.data.modifiedCount > 0) {
         toast.success("Donation request updated successfully");
         setEditable(false);

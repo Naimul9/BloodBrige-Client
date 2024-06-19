@@ -12,6 +12,7 @@ import {
 import axios from 'axios'
 import { app } from '../../firebase.config'
 import useAxiosPublic from '../hooks/useAxiosPublic'
+import { Navigate } from 'react-router-dom'
 
 
 export const AuthContext = createContext(null)
@@ -40,6 +41,7 @@ const AuthProvider = ({ children }) => {
     setLoading(true)
     await axios(`${import.meta.env.VITE_API_URL}/logout`, { withCredentials: true })
     return signOut(auth)
+    
   }
 
   const updateUserProfile = (name, photo) => {

@@ -22,7 +22,7 @@ const GiveFund = () => {
 
     try {
       const { data } = await axiosSecure.post(`/create-payment-intent`, {
-        price: parseFloat(price) * 100, userName: user?.displayName,  date: currentDate, 
+        price: parseInt(price * 100), userName: user?.displayName,  date: currentDate, 
       });
 
       const clientSecret = data.clientSecret;

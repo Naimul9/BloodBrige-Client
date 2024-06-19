@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import JoditEditor from 'jodit-react';
 import axios from 'axios';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import toast from 'react-hot-toast';
 
 const AddBlog = () => {
     const { register, handleSubmit, reset } = useForm();
@@ -45,10 +46,10 @@ const AddBlog = () => {
             await axiosSecure.post('/blogs', sanitizedBlogData);
             reset();
             setContent('');
-            alert('Blog created successfully!');
+            toast.success('Blog created successfully!');
         } catch (error) {
             console.error('Error creating blog:', error);
-            alert('Failed to create blog. Please try again.');
+            toast.error('Failed to create blog. Please try again.');
         }
     };
 

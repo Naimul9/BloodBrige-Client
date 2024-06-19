@@ -73,39 +73,39 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element:<DashboardShow/>
+        element:<PrivateRoute><DashboardShow/></PrivateRoute>
       },
       {
         path: 'profile',
-        element: <Profile />
+        element: <PrivateRoute> <Profile /></PrivateRoute>
       },
       {
         path:'my-donation-requests',
-        element:<DonorRoute><MyDonationRequests/></DonorRoute>
+        element:  <DonorRoute><MyDonationRequests/></DonorRoute>
       },
       {
         path:'create-donation-request',
-        element:<DonorRoute><CreateDonationRequest/></DonorRoute>
+        element:  <DonorRoute><CreateDonationRequest/></DonorRoute>
       },
       {
         path:'update-donation-request/:id', 
-        element:<PrivateRoute><UpdateDonationRequest/></PrivateRoute> 
+        element:   <PrivateRoute><UpdateDonationRequest/></PrivateRoute> 
       },
       {
         path:'all-users',
-        element:<AdminRoute><AllUser/></AdminRoute>
+        element:    <AdminRoute><AllUser/></AdminRoute>
       },
       {
         path:'all-blood-donation-request',
-        element: <AdminVolunteerRoute><AllBloodDonationRequests/></AdminVolunteerRoute>
+        element:   <AdminVolunteerRoute><AllBloodDonationRequests/></AdminVolunteerRoute>
       },
       {
         path:'content-management',
-        element:<AdminVolunteerRoute><ContentManagement/></AdminVolunteerRoute>
+        element:   <AdminVolunteerRoute><ContentManagement/></AdminVolunteerRoute>
       },
       {
         path:'add-blog',
-        element:<AdminRoute><AddBlog/></AdminRoute>
+        element:    <AdminVolunteerRoute><AddBlog/></AdminVolunteerRoute>
       },
       
 

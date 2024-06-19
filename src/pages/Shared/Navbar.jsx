@@ -5,9 +5,12 @@ import { AuthContext } from "../../Provider/AuthProvider";
 
 
 
-const Navbar = () => {
 
+
+const Navbar = () => {
   const { user, logOut } = useContext(AuthContext)
+ 
+  
   return (
     <div className='navbar fixed  z-10 bg-opacity-30 bg-black shadow-sm  py-1'>
       <div className='flex-1'>
@@ -62,7 +65,7 @@ const Navbar = () => {
                 <img
                   referrerPolicy='no-referrer'
                   alt='User Profile Photo'
-                  src={user?.photoURL}
+                  src={ user?.photoURL }
                 />
               </div>
             </div>
@@ -100,6 +103,7 @@ const Navbar = () => {
               <li className='mt-2'>
                 <button
                   onClick={logOut}
+                  
                   className='bg-gray-200 block text-center'
                 >
                   Logout

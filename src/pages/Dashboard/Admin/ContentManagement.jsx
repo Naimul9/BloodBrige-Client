@@ -149,7 +149,7 @@ const ContentManagement = () => {
                                         )}
                                     </td>
                                     <td>
-                                        <button onClick={() => handleEditBlog(blog._id)} className='btn btn-sm'>
+                                        <button className='btn btn-sm'>
                                             <MdEdit />
                                         </button>
                                     </td>

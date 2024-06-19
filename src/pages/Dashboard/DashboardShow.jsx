@@ -27,6 +27,16 @@ const DashboardShow = () => {
   });
 
   // get all donation req
+  const { data: funding } = useQuery({
+    queryKey: ['funding'],
+    queryFn: async () => {
+      const res = await axiosSecure.get('/funding');
+      console.log(res);
+      return res.data;
+    },
+  });
+
+
   const { data: { total } = {} } = useQuery({
     queryKey: ['donation',],
     queryFn: async () => {
@@ -96,8 +106,7 @@ const DashboardShow = () => {
   
 
   
-  const totalFunding = 10000; // Replace with actual total funding amount
- 
+  
 
   return (
     <>
@@ -146,7 +155,7 @@ const DashboardShow = () => {
                                 <>
                                   <button
                                     onClick={() => handleStatusChange(donation._id, 'Done')}
-                                    className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2"
+                                    className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2 tooltip" data-tip="Done"
                                   >
                                     <MdOutlineDoneAll />
                                   </button>
@@ -160,11 +169,11 @@ const DashboardShow = () => {
                                 </>
                               )}
                               <Link to={`/dashboard/update-donation-request/${donation._id}`}>
-                                <button className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2">
+                                <button className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 md:mr-2 tooltip" data-tip="Edit"  >
                                   <MdOutlineModeEdit />
                                 </button>
                               </Link>
-                              <button onClick={() => handleDelete(donation._id)} className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0">
+                              <button onClick={() => handleDelete(donation._id)} className="px-2 py-1 font-semibold rounded-md text-gray-900 text-xl mb-2 md:mb-0 tooltip" data-tip="Delete"   >
                                 <AiOutlineDelete />
                               </button>
                             </>
@@ -173,13 +182,13 @@ const DashboardShow = () => {
                               <>
                                 <button
                                   onClick={() => handleStatusChange(donation._id, 'Done')}
-                                  className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50 mb-2 md:mb-0 md:mr-2"
+                                  className="px-3 py-1 font-semibold rounded-md bg-green-400 dark:bg-green-600 text-gray-900 dark:text-gray-50 mb-2 md:mb-0 md:mr-2  tooltip" data-tip="Done"
                                 >
                                   <MdOutlineDoneAll />
                                 </button>
                                 <button
                                   onClick={() => handleStatusChange(donation._id, 'Canceled')}
-                                  className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 mb-2 md:mb-0"
+                                  className="px-3 py-1 font-semibold rounded-md bg-red-400 dark:bg-red-600 text-gray-900 dark:text-gray-50 mb-2 md:mb-0 tooltip" data-tip="Cancel"
                                 >
                                   <MdOutlineCancel />
                                 </button>
@@ -214,7 +223,7 @@ const DashboardShow = () => {
         </div>
       )}
 
-{ (role === "admin" || role ==="volunteer")  && (
+{ (role === "admin" || role === "volunteer")  && (
                 <div className="container p-2">
                     <div className="bg-base-200 h-16 rounded-lg">
                         <h1 className="text-3xl font-semibold mt-10 py-3 px-5">  Welcome, {user?.displayName}</h1>
@@ -236,7 +245,7 @@ const DashboardShow = () => {
                                 <FaMoneyBillWave className="text-4xl text-yellow-500 mr-4" />
                                 <div>
                                     <p className="text-lg font-semibold ">Total Funding</p>
-                                    <p className="">${totalFunding}</p>
+                                    <p className="">${funding?.amount}</p>
                                 </div>
                             </div>
                         </div>

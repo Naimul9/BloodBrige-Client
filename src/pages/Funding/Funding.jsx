@@ -32,9 +32,8 @@ const Funding = () => {
 const { data: funding = [], refetch } = useQuery({
     queryKey: ['funding', user?.email],
     queryFn: async () => {
-        const { data } = await axiosSecure.get('/funding', {
-           
-        });
+        const { data } = await axiosSecure.get('/funding/all');
+        console.log(data);
         return data;
     },
     enabled: !!user?.email, // Ensures the query runs only if the user email is available
