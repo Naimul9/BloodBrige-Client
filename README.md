@@ -1,5 +1,7 @@
 # BloodBridge
 
+**BloodBridge is an website for Blood donating and requesting. User can find a donor in his/her required location. It features an admin panel for better maintainability.**
+
 ## Important Links
 
 [Live-Link](https://blood-bridge-6249e.web.app)
