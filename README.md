@@ -4,7 +4,7 @@
 
 [Live-Link](https://blood-bridge-6249e.web.app)
 
-[Client-Repository](https://github.com/Naimul9/BloodBridge-Client.git)
+[Client-Repository](https://github.com/Naimul9/BloodBrige-Client.git)
 
 [Server-Repository](https://github.com/Naimul9/BloodBridge-Server.git)
 
