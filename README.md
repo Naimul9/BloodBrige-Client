@@ -10,7 +10,7 @@
 
 [Server-Repository](https://github.com/Naimul9/BloodBridge-Server.git)
 
-**Admin Information:** Email-admin@rokto.com
+**Admin Information:** Email-admin@blood.com
                        Password-
 
 ## Features 
